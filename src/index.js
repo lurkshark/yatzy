@@ -1,4 +1,5 @@
 import './style';
-import App from './components/app';
 
-export default App;
+export default function Yatzy() {
+  return (<h1>Yatzy</h1>)
+}
