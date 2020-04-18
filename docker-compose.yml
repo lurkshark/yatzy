@@ -1,16 +1,28 @@
 version: "3"
 services:
+# development:
+#   image: node:12.16-stretch
+#   working_dir: /usr/src/app
+#   environment:
+#   - HOST=0.0.0.0
+#   - PORT=8080
+#   ports:
+#   - "8080:8080"
+#   volumes:
+#   - ./:/usr/src/app
+#   command:
+#   - npm
+#   - run
+#   - dev
   development:
-    image: node:12.16-stretch
+    image: python:3-alpine
     working_dir: /usr/src/app
-    environment:
-    - HOST=0.0.0.0
-    - PORT=8080
     ports:
-    - "8080:8080"
+    - "5000:5000"
     volumes:
-    - ./:/usr/src/app
-    command:
-    - npm
-    - run
-    - dev
+    - ./psrc:/usr/src/app
+    command: >
+      sh -c "pip install -r requirements.txt &&
+             python3 yatzy.py"
+  redis:
+    image: redis:5-alpine

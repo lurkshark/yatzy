@@ -1,0 +1,44 @@
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Light.woff2') format('woff2'),
+       url('ComicNeue-Light.woff') format('woff');
+  font-weight: 300;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Light-Oblique.woff2') format('woff2'),
+       url('ComicNeue-Light-Oblique.woff') format('woff');
+  font-weight: 300;
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Regular.woff2') format('woff2'),
+       url('ComicNeue-Regular.woff') format('woff');
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Regular-Oblique.woff2') format('woff2'),
+       url('ComicNeue-Regular-Oblique.woff') format('woff');
+  font-weight: 400;
+  font-style: oblique;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Bold.woff2') format('woff2'),
+       url('ComicNeue-Bold.woff') format('woff');
+  font-weight: 700;
+}
+
+@font-face {
+  font-family: 'Comic Neue';
+  src: url('ComicNeue-Bold-Oblique.woff2') format('woff2'),
+       url('ComicNeue-Bold-Oblique.woff') format('woff');
+  font-weight: 700;
+  font-style: oblique;
+}

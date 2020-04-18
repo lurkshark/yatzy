@@ -1,0 +1,4 @@
+bottle==0.12.18
+bottle-redis==0.2.3
+schema==0.7.2
+pyotp==2.3.0
