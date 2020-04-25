@@ -1,37 +1,66 @@
 import * as PIXI from 'pixi.js'
+import {flamingDeathmatch, yacht} from './assets'
+import Gameplay from '../gameplay'
 
 export default class Menu {
 
-  constructor(app, gotoScene) {
+  constructor(app, gotoScene, options = {}) {
     this.app = app
     this.gotoScene = gotoScene
+    this.options = {...options}
   }
 
   onStart(container) {
-    this.container = container
-    const richText = new PIXI.Text('TURN DOWN FOR WHAT??', new PIXI.TextStyle({
-      fontFamily: 'Arial',
-      fontSize: 36,
-      fontStyle: 'italic',
-      fontWeight: 'bold',
-      fill: ['#ffffff', '#00ff99'], // gradient
-      stroke: '#4a1850',
-      strokeThickness: 5,
-      dropShadow: true,
-      dropShadowColor: '#000000',
-      dropShadowBlur: 4,
-      dropShadowAngle: Math.PI / 6,
-      dropShadowDistance: 6,
-      wordWrap: true,
-      wordWrapWidth: 440,
-    }))
+    const setup = (loader, resources) => {
+      const yatzyText = new PIXI.Text('Yatzy', new PIXI.TextStyle({
+        fontFamily: 'Arial',
+        strokeThickness: 2,
+        stroke: '#000000',
+        fill: ['#ff9999', '#990000'],
+        fontWeight: 700,
+        fontSize: 72
+      }))
 
-    richText.x = 50
-    richText.y = 250
-    this.container.addChild(richText)
+      yatzyText.x = 50
+      yatzyText.y = 15
+      this.container.addChild(yatzyText)
+      
+      const deathmatchText = new PIXI.Sprite(resources.deathmatch.texture)
+      deathmatchText.width = this.options.width - 50
+      deathmatchText.scale.y = deathmatchText.scale.x
+      deathmatchText.x = this.options.width / 2
+      deathmatchText.anchor.set(0.5, 0)
+      deathmatchText.y = 100
+      this.container.addChild(deathmatchText)
+      
+      const startNewGameButton = new PIXI.Text('Start a new game', new PIXI.TextStyle({
+        fontFamily: 'Comic Neue',
+        strokeThickness: 2,
+        stroke: '#333333',
+        fill: '#ff34ff',
+        fontSize: 36
+      }))
+
+      startNewGameButton.x = 50
+      startNewGameButton.y = 250
+      startNewGameButton.interactive = true
+      startNewGameButton.buttonMode = true
+      startNewGameButton.on('pointerup', () => this.onStartNewGame())
+      this.container.addChild(startNewGameButton)
+    }
+    
+    this.container = container
+    PIXI.Loader.shared
+      .add('deathmatch', flamingDeathmatch)
+      .add('yacht', yacht)
+      .load(setup)
   }
 
-  update(delta) {}
+  onStartNewGame() {
+    this.gotoScene(new Gameplay(this.app, this.gotoScene, this.options))
+  }
+
+  onUpdate(delta) {}
 
   onFinish() {}
 }

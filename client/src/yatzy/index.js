@@ -1,5 +1,10 @@
 import * as PIXI from 'pixi.js'
 import Menu from './menu'
+import './assets'
+
+window.PIXI = PIXI
+// PIXI.settings.ROUND_PIXELS = true
+// PIXI.settings.RESOLUTION = 2
 
 export default class Yatzy {
 
@@ -13,6 +18,9 @@ export default class Yatzy {
     this.backStack = []
     // Stage within the border
     this.innerStage = new PIXI.Container()
+    this.innerStage.width = this.app.renderer.width
+    this.innerStage.position.y = 72
+
     this.app.stage.addChild(this.innerStage)
     body.appendChild(this.app.view)
 
@@ -34,30 +42,43 @@ export default class Yatzy {
       }
     }
 
+    const goBack = async () => {
+      if (this.backStack.length < 2) return
+      // TODO
+    }
+
     // Add the overall update
     this.app.ticker.add((delta) => {
       this.update(delta)
     })
 
-    gotoScene(new Menu(this.app, gotoScene))
+    // Load the menu with height adjusted
+    gotoScene(new Menu(this.app, gotoScene, {
+      height: this.app.renderer.height - 100,
+      width: Math.min(
+        this.app.renderer.width,
+        Math.floor(this.app.renderer.height / 1.34)
+      )
+    }))
+
     this.drawStage()
   }
 
   update(delta) {
     if (!this.backStack[0]) return
-    this.backStack[0].update(delta)
+    this.backStack[0].onUpdate(delta)
   }
 
   drawStage() {
-    const frame = new PIXI.Graphics();
+    const frame = new PIXI.Graphics()
     // Blue title bar
     frame.beginFill(0x5d7cb2)
-      .drawRect(0, 0, this.app.renderer.width, 20)
+      .drawRect(0, 0, this.app.renderer.width, 26)
       .endFill()
     // Top fill
     frame.beginFill(0xc0c0c0)
       .lineStyle({width: 1, color: 0x7e7e7e})
-      .drawRect(0, 20, this.app.renderer.width, 30)
+      .drawRect(0, 26, this.app.renderer.width, 46)
       .lineStyle(0)
       .endFill()
     // Back arrow circle
@@ -75,7 +96,7 @@ export default class Yatzy {
     // Bottom fill
     frame.beginFill(0xc0c0c0)
       .lineStyle({width: 1, color: 0x7e7e7e})
-      .drawRect(0, this.app.renderer.height - 20, this.app.renderer.width, 30)
+      .drawRect(0, this.app.renderer.height - 28, this.app.renderer.width, 28)
       .lineStyle(0)
       .endFill()
     this.app.stage.addChild(frame)
