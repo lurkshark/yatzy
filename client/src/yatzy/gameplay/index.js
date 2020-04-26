@@ -13,8 +13,10 @@ export default class Gameplay {
     const setup = (loader, resources) => {
       // Roll button sprite
       this.rollButton = new PIXI.Sprite()
-      this.rollButton.x = this.options.width / 2 - 40
-      this.rollButton.y = this.options.height - 50
+      this.rollButton.x = 20
+      this.rollButton.width = this.options.width - 40
+      this.rollButton.y = this.options.height - 60
+      this.rollButton.height = 40
       this.rollButton.interactive = true
       this.rollButton.buttonMode = true
       // Add click handler and add to container
@@ -28,34 +30,34 @@ export default class Gameplay {
         'aces', 'twos', 'threes', 'fours', 'fives', 'sixes'
       ].map((category) => {
         const sprite = new PIXI.Sprite()
-        sprite.width = 200
-        sprite.height = 40
+        sprite.width = 180
+        sprite.height = 36
         const leftColumnX = 0
-        const rightColumnX = 200
-        const rowOffsetY = 40
+        const rightColumnX = 180
+        const rowOffsetY = 36
         switch (category) {
           case 'aces':
-            sprite.x = leftColumnX
+            sprite.x = 0
             sprite.y = 0
             break
           case 'twos':
-            sprite.x = leftColumnX
+            sprite.x = 0
             sprite.y = rowOffsetY
             break
           case 'threes':
-            sprite.x = leftColumnX
+            sprite.x = 0
             sprite.y = 2 * rowOffsetY
             break
           case 'fours':
-            sprite.x = rightColumnX
+            sprite.x = sprite.width
             sprite.y = 0
             break
           case 'fives':
-            sprite.x = rightColumnX
+            sprite.x = sprite.width
             sprite.y = rowOffsetY
             break
           case 'sixes':
-            sprite.x = rightColumnX
+            sprite.x = sprite.width
             sprite.y = 2 * rowOffsetY
             break
         }
@@ -109,16 +111,24 @@ export default class Gameplay {
     // Button body
     const button = new PIXI.Graphics()
       .beginFill(0x999999)
-      .lineStyle(2, 0x666666)
-      .drawRect(0, 0, 100, 30)
+      .lineStyle(1, 0x666666)
+      .drawRoundedRect(0, 0, 400, 40, 2)
       .lineStyle(0)
+      .beginFill(0xdddddd)
+      .drawRect(1, 1, 400, 1)
+      .drawRect(1, 1, 1, 40)
       .endFill()
     // Button text
-    const buttonText = new PIXI.Text('-=[ roll ]=-', new PIXI.TextStyle({
+    const rollsLeft = 3 - this.game.turnRolls
+    const buttonText = new PIXI.Text(`-=[ ROLL ${rollsLeft}/3 ]=-`, new PIXI.TextStyle({
       fontFamily: 'Comic Neue',
       fill: '#000000',
+      fontWeight: 700,
       fontSize: 18
     }))
+    buttonText.anchor.set(0.5)
+    buttonText.x = 200
+    buttonText.y = 20
     
     // Add text to button
     button.addChild(buttonText)
@@ -130,11 +140,12 @@ export default class Gameplay {
     for (let score of this.scorecard) {
       // Cell outline
       const cell = new PIXI.Graphics()
+        .beginFill(0xffffff)
         .lineStyle(1, 0x000000)
-        .drawRect(0, 0, 200, 40)
+        .drawRect(0, 0, 180, 36)
+        .endFill()
       const label = new PIXI.Text(score.category, new PIXI.TextStyle({
         fontFamily: 'Comic Neue',
-        stroke: '#000000',
         fill: '#000000',
         fontSize: 24
       }))
@@ -143,10 +154,9 @@ export default class Gameplay {
         fill: '#000000',
         fontSize: 24
       }))
-      label.roundPixels = true
       label.x = 5
       label.y = 5
-      points.x = 140
+      points.x = 130
       points.y = 5
       cell.addChild(label)
       cell.addChild(points)
@@ -159,27 +169,82 @@ export default class Gameplay {
   updateDiceTexture() {
     // Dice pips helper
     const pips = (n) => {
-      const pipsText = new PIXI.Text(n, {fill: '#ffffff'})
-      pipsText.anchor.set(0.5)
-      pipsText.x = 50
-      pipsText.y = 50
-      return pipsText
+      const body = new PIXI.Graphics()
+      body.beginFill(0xffffff)
+      // Top left
+      if ([3, 4, 5, 6].includes(n)) {
+        body.drawCircle(28, 28, 8)
+      }
+      // Top right
+      if ([2, 4, 5, 6].includes(n)) {
+        body.drawCircle(72, 28, 8)
+      }
+      // Bottom left
+      if ([2, 4, 5, 6].includes(n)) {
+        body.drawCircle(28, 72, 8)
+      }
+      // Bottom right
+      if ([3, 4, 5, 6].includes(n)) {
+        body.drawCircle(72, 72, 8)
+      }
+      // Middle
+      if ([1, 3, 5].includes(n)) {
+        body.drawCircle(50, 50, 8)
+      }
+      // Left and right
+      if (n === 6) {
+        body.drawCircle(28, 50, 8)
+        body.drawCircle(72, 50, 8)
+      }
+
+      return body
     }
 
     for (let die of this.dice) {
       const face = new PIXI.Graphics()
+      const value = this.game.currentDice[die.index]
+      const isActive = this.game.turnRolls > 0
+
+      // Outline if holding
       if (die.holding) {
-        // Outline if holding
-        face.lineStyle(4, 0x000000)
+        face.lineStyle(8, 0xffff00)
       }
 
       // Rounded square body
-      const alpha = this.game.turnRolls === 0 ? 0.35 : 1
-      face.beginFill(0xaa0000, alpha)
+      face.beginFill(isActive ? 0xaa0000 : 0x660000)
         .drawRoundedRect(0, 0, 100, 100, 12)
+        .lineStyle(0)
         .endFill()
-        // Add the pips
-        .addChild(pips(this.game.currentDice[die.index]))
+
+      // Draw the pips
+      face.beginFill(isActive ? 0xffffff : 0xcccccc)
+      // Top left
+      if ([3, 4, 5, 6].includes(value)) {
+        face.drawCircle(28, 28, 8)
+      }
+      // Top right
+      if ([2, 4, 5, 6].includes(value)) {
+        face.drawCircle(72, 28, 8)
+      }
+      // Bottom left
+      if ([2, 4, 5, 6].includes(value)) {
+        face.drawCircle(28, 72, 8)
+      }
+      // Bottom right
+      if ([3, 4, 5, 6].includes(value)) {
+        face.drawCircle(72, 72, 8)
+      }
+      // Middle
+      if ([1, 3, 5].includes(value)) {
+        face.drawCircle(50, 50, 8)
+      }
+      // Left and right
+      if (value === 6) {
+        face.drawCircle(28, 50, 8)
+        face.drawCircle(72, 50, 8)
+      }
+      // End pips
+      face.endFill()
 
       // Generate the texture and update sprite
       const texture = this.app.renderer.generateTexture(face)
@@ -191,6 +256,7 @@ export default class Gameplay {
     const holding = this.dice.map(die => die.holding)
     if (!this.game.canRoll(holding)) return
     this.game = this.game.roll(holding)
+    this.updateRollButtonTexture()
     this.updateDiceTexture()
   }
 
@@ -201,12 +267,13 @@ export default class Gameplay {
       die.holding = false
     }
 
+    this.updateRollButtonTexture()
     this.updateScorecardTexture()
     this.updateDiceTexture()
   }
 
   onClickDice(die) {
-    if (this.game.turnRolls === 0 || this.game.turnRolls === 3) return
+    if (this.game.turnRolls === 0) return
     this.dice[die].holding = !this.dice[die].holding
     this.updateDiceTexture()
   }

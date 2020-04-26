@@ -1,4 +1,4 @@
-// import speakeasy from 'speakeasy'
+import speakeasy from 'speakeasy'
 
 const CATEGORIES = [
   'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
@@ -10,7 +10,9 @@ const CATEGORIES = [
 export default class Game {
 
   constructor(
-      seed = 0,
+      seed = speakeasy
+        .generateSecret()
+        .base32,
       turnRolls = 0,
       totalDiceRolls = 0,
       currentDice = [0, 0, 0, 0, 0],
@@ -40,7 +42,12 @@ export default class Game {
     let newTotalDiceRolls = this.totalDiceRolls
     const newCurrentDice = [...this.currentDice]
     const diceValue = (offset) => {
-      return (offset % 6) + 1
+      const otp = +speakeasy.hotp({
+        secret: this.seed,
+        counter: offset
+      })
+
+      return (otp % 6) + 1
     }
 
     for (let i = 0; i < 5; i++) {

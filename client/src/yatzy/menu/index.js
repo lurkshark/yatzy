@@ -36,7 +36,7 @@ export default class Menu {
       const startNewGameButton = new PIXI.Text('Start a new game', new PIXI.TextStyle({
         fontFamily: 'Comic Neue',
         strokeThickness: 2,
-        stroke: '#333333',
+        stroke: '#ffffff',
         fill: '#ff34ff',
         fontSize: 36
       }))
