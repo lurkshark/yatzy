@@ -119,8 +119,7 @@ export default class Gameplay {
       .drawRect(1, 1, 1, 40)
       .endFill()
     // Button text
-    const rollsLeft = 3 - this.game.turnRolls
-    const buttonText = new PIXI.Text(`-=[ ROLL ${rollsLeft}/3 ]=-`, new PIXI.TextStyle({
+    const buttonText = new PIXI.Text('-=[ ROLL ]=-', new PIXI.TextStyle({
       fontFamily: 'Comic Neue',
       fill: '#000000',
       fontWeight: 700,
@@ -256,7 +255,7 @@ export default class Gameplay {
     const holding = this.dice.map(die => die.holding)
     if (!this.game.canRoll(holding)) return
     this.game = this.game.roll(holding)
-    this.updateRollButtonTexture()
+    this.updateDiceTexture()
     this.updateDiceTexture()
   }
 
@@ -267,7 +266,6 @@ export default class Gameplay {
       die.holding = false
     }
 
-    this.updateRollButtonTexture()
     this.updateScorecardTexture()
     this.updateDiceTexture()
   }
