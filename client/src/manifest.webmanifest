@@ -1,0 +1,16 @@
+{
+  "name": "Yatzy Deathmatch",
+  "short_name": "Yatzy",
+  "start_url": "/",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "yatzy/assets/icon-160x160.png",
+      "type": "image/png",
+      "sizes": "160x160"
+    }
+  ]
+}
