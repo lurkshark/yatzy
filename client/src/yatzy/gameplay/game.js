@@ -2,7 +2,7 @@ import speakeasy from 'speakeasy'
 
 const CATEGORIES = [
   'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
-//  'threeOfAKind', 'fourOfAKind', 'fullHouse',
+  'threeOfAKind', 'fourOfAKind', //'fullHouse',
 //  'smallStraight', 'largeStraight',
 //  'yatzy', 'chance'
 ]
@@ -79,36 +79,55 @@ export default class Game {
   score(category) {
     if (!this.canScore(category)) return false
     const newScorecard = {...this.scorecard}
+    let tally = {} // Used for reducing dice
     switch (category) {
       case 'aces':
-        newScorecard['aces'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 1 ? acc + 1 : acc
+        newScorecard['aces'] = this.currentDice.reduce((acc, die) => {
+          return die === 1 ? acc + 1 : acc
         }, 0)
         break
       case 'twos':
-        newScorecard['twos'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 2 ? acc + 2 : acc
+        newScorecard['twos'] = this.currentDice.reduce((acc, die) => {
+          return die === 2 ? acc + 2 : acc
         }, 0)
         break
       case 'threes':
-        newScorecard['threes'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 3 ? acc + 3 : acc
+        newScorecard['threes'] = this.currentDice.reduce((acc, die) => {
+          return die === 3 ? acc + 3 : acc
         }, 0)
         break
       case 'fours':
-        newScorecard['fours'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 4 ? acc + 4 : acc
+        newScorecard['fours'] = this.currentDice.reduce((acc, die) => {
+          return die === 4 ? acc + 4 : acc
         }, 0)
         break
       case 'fives':
-        newScorecard['fives'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 5 ? acc + 5 : acc
+        newScorecard['fives'] = this.currentDice.reduce((acc, die) => {
+          return die === 5 ? acc + 5 : acc
         }, 0)
         break
       case 'sixes':
-        newScorecard['sixes'] = this.currentDice.reduce((acc, dice) => {
-          return dice === 6 ? acc + 6 : acc
+        newScorecard['sixes'] = this.currentDice.reduce((acc, die) => {
+          return die === 6 ? acc + 6 : acc
         }, 0)
+        break
+      case 'threeOfAKind':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc.sum += die
+          acc.counts[die] += 1
+          acc.valid = acc.valid || acc.counts[die] === 3
+          return acc
+        }, {sum: 0, valid: false, counts: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}})
+        newScorecard['threeOfAKind'] = tally.valid ? tally.sum : 0
+        break
+      case 'fourOfAKind':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc.sum += die
+          acc.counts[die] += 1
+          acc.valid = acc.valid || acc.counts[die] === 4
+          return acc
+        }, {sum: 0, valid: false, counts: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}})
+        newScorecard['fourOfAKind'] = tally.valid ? tally.sum : 0
         break
     }
 

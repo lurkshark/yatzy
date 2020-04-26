@@ -27,14 +27,12 @@ export default class Gameplay {
       // Scorecard container and sprites
       const scorecardContainer = new PIXI.Container()
       this.scorecard = [
-        'aces', 'twos', 'threes', 'fours', 'fives', 'sixes'
+        'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
+        'threeOfAKind', 'fourOfAKind'
       ].map((category) => {
         const sprite = new PIXI.Sprite()
         sprite.width = 180
         sprite.height = 36
-        const leftColumnX = 0
-        const rightColumnX = 180
-        const rowOffsetY = 36
         switch (category) {
           case 'aces':
             sprite.x = 0
@@ -42,11 +40,11 @@ export default class Gameplay {
             break
           case 'twos':
             sprite.x = 0
-            sprite.y = rowOffsetY
+            sprite.y = sprite.height
             break
           case 'threes':
             sprite.x = 0
-            sprite.y = 2 * rowOffsetY
+            sprite.y = 2 * sprite.height
             break
           case 'fours':
             sprite.x = sprite.width
@@ -54,11 +52,19 @@ export default class Gameplay {
             break
           case 'fives':
             sprite.x = sprite.width
-            sprite.y = rowOffsetY
+            sprite.y = sprite.height
             break
           case 'sixes':
             sprite.x = sprite.width
-            sprite.y = 2 * rowOffsetY
+            sprite.y = 2 * sprite.height
+            break
+          case 'threeOfAKind':
+            sprite.x = 0
+            sprite.y = 4 * sprite.height
+            break
+          case 'fourOfAKind':
+            sprite.x = 0
+            sprite.y = 5 * sprite.height
             break
         }
         sprite.interactive = true
@@ -155,7 +161,7 @@ export default class Gameplay {
       }))
       label.x = 5
       label.y = 5
-      points.x = 130
+      points.x = 150
       points.y = 5
       cell.addChild(label)
       cell.addChild(points)
@@ -202,7 +208,7 @@ export default class Gameplay {
     for (let die of this.dice) {
       const face = new PIXI.Graphics()
       const value = this.game.currentDice[die.index]
-      const isActive = this.game.turnRolls > 0
+      const isActive = this.game.turnRolls > 0 && !this.game.done
 
       // Outline if holding
       if (die.holding) {
