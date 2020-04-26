@@ -255,7 +255,7 @@ export default class Gameplay {
     const holding = this.dice.map(die => die.holding)
     if (!this.game.canRoll(holding)) return
     this.game = this.game.roll(holding)
-    this.updateDiceTexture()
+    this.updateRollButtonTexture()
     this.updateDiceTexture()
   }
 
@@ -266,6 +266,7 @@ export default class Gameplay {
       die.holding = false
     }
 
+    this.updateRollButtonTexture()
     this.updateScorecardTexture()
     this.updateDiceTexture()
   }
