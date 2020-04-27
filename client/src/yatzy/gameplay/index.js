@@ -3,10 +3,9 @@ import Game from './game'
 
 export default class Gameplay {
 
-  constructor(app, gotoScene, options = {}) {
+  constructor(app, coordinator) {
     this.app = app
-    this.gotoScene = gotoScene
-    this.options = {...options}
+    this.coordinator = coordinator
   }
 
   onStart(container) {
@@ -14,9 +13,9 @@ export default class Gameplay {
       // Roll button sprite
       this.rollButton = new PIXI.Sprite()
       this.rollButton.x = 20
-      this.rollButton.width = this.options.width - 40
-      this.rollButton.y = this.options.height - 60
-      this.rollButton.height = 40
+      //this.rollButton.width = this.coordinator.width - 40
+      this.rollButton.y = this.coordinator.height - 60
+      //this.rollButton.height = 40
       this.rollButton.interactive = true
       this.rollButton.buttonMode = true
       // Add click handler and add to container
@@ -31,8 +30,10 @@ export default class Gameplay {
         'threeOfAKind', 'fourOfAKind'
       ].map((category) => {
         const sprite = new PIXI.Sprite()
-        sprite.width = 180
-        sprite.height = 36
+        //sprite.width = 180
+        //sprite.height = 36
+        const columnOffset = 180
+        const rowOffset = 36
         switch (category) {
           case 'aces':
             sprite.x = 0
@@ -40,31 +41,31 @@ export default class Gameplay {
             break
           case 'twos':
             sprite.x = 0
-            sprite.y = sprite.height
+            sprite.y = rowOffset
             break
           case 'threes':
             sprite.x = 0
-            sprite.y = 2 * sprite.height
+            sprite.y = 2 * rowOffset
             break
           case 'fours':
-            sprite.x = sprite.width
+            sprite.x = columnOffset
             sprite.y = 0
             break
           case 'fives':
-            sprite.x = sprite.width
-            sprite.y = sprite.height
+            sprite.x = columnOffset
+            sprite.y = rowOffset
             break
           case 'sixes':
-            sprite.x = sprite.width
-            sprite.y = 2 * sprite.height
+            sprite.x = columnOffset
+            sprite.y = 2 * rowOffset
             break
           case 'threeOfAKind':
             sprite.x = 0
-            sprite.y = 4 * sprite.height
+            sprite.y = 4 * rowOffset
             break
           case 'fourOfAKind':
             sprite.x = 0
-            sprite.y = 5 * sprite.height
+            sprite.y = 5 * rowOffset
             break
         }
         sprite.interactive = true
@@ -76,8 +77,8 @@ export default class Gameplay {
       // Scale the scorecard container
       scorecardContainer.x = 20
       scorecardContainer.y = 20
-      scorecardContainer.width = this.options.width - 40
-      scorecardContainer.scale.y = scorecardContainer.scale.x
+      //scorecardContainer.width = this.coordinator.width - 40
+      //scorecardContainer.scale.y = scorecardContainer.scale.x
       // Add the scaled scorecard container
       this.container.addChild(scorecardContainer)
 
@@ -85,8 +86,8 @@ export default class Gameplay {
       const diceContainer = new PIXI.Container()
       this.dice = [0, 1, 2, 3, 4].map((die) => {
         const sprite = new PIXI.Sprite()
-        sprite.width = 100
-        sprite.height = 100
+        //sprite.width = 100
+        //sprite.height = 100
         sprite.x = die * 120
         sprite.interactive = true
         sprite.buttonMode = true
@@ -96,9 +97,9 @@ export default class Gameplay {
       })
       // Scale the dice container
       diceContainer.x = 20
-      diceContainer.y = this.options.height - 140
-      diceContainer.width = this.options.width - 40
-      diceContainer.scale.y = diceContainer.scale.x
+      diceContainer.y = this.coordinator.height - 140
+      //diceContainer.width = this.coordinator.width - 40
+      //diceContainer.scale.y = diceContainer.scale.x
       // Add the scaled dice container
       this.container.addChild(diceContainer)
       
@@ -125,10 +126,9 @@ export default class Gameplay {
       .drawRect(1, 1, 1, 40)
       .endFill()
     // Button text
-    const buttonText = new PIXI.Text('-=[ ROLL ]=-', new PIXI.TextStyle({
-      fontFamily: 'Comic Neue',
-      fill: '#000000',
-      fontWeight: 700,
+    const buttonText = new PIXI.Text('Roll', new PIXI.TextStyle({
+      fontFamily: 'OpenSans',
+      fill: '#333333',
       fontSize: 18
     }))
     buttonText.anchor.set(0.5)
@@ -149,15 +149,15 @@ export default class Gameplay {
         .lineStyle(1, 0x000000)
         .drawRect(0, 0, 180, 36)
         .endFill()
-      const label = new PIXI.Text(score.category, new PIXI.TextStyle({
-        fontFamily: 'Comic Neue',
-        fill: '#000000',
-        fontSize: 24
-      }))
+      const label = new PIXI.Text(score.category, {
+        fontFamily: 'OpenSans',
+        fill: '#333333',
+        fontSize: 16
+      })
       const points = new PIXI.Text(this.game.scorecard[score.category], new PIXI.TextStyle({
-        fontFamily: 'Comic Neue',
-        fill: '#000000',
-        fontSize: 24
+        fontFamily: 'OpenSans',
+        fill: '#333333',
+        fontSize: 16
       }))
       label.x = 5
       label.y = 5
