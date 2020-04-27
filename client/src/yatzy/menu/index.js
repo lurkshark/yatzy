@@ -12,7 +12,7 @@ export default class Menu {
     const setup = (loader, resources) => {
       const headerText = new PIXI.Text('Yatzy\nLaboratory', {
         fontFamily: 'Ubuntu',
-        fill: '#333333',
+        fill: '#181d33',
         fontSize: 54
       })
       headerText.x = 35
@@ -21,7 +21,7 @@ export default class Menu {
       
       const startNewGameText = new PIXI.Text('New Experiment', {
         fontFamily: 'OpenSans',
-        fill: '#333333',
+        fill: '#181d33',
         fontSize: 24
       })
 

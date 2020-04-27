@@ -5,8 +5,8 @@ import './assets'
 window.PIXI = PIXI
 //PIXI.settings.ROUND_PIXELS = true
 //PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
-//PIXI.settings.PRECISION_FRAGMENT = 'highp'
 PIXI.settings.RESOLUTION = window.devicePixelRatio || 1
+//PIXI.settings.PRECISION_FRAGMENT = 'highp'
 
 export default class Yatzy {
 
