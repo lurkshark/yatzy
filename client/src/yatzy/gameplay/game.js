@@ -3,8 +3,8 @@ import speakeasy from 'speakeasy'
 const CATEGORIES = [
   'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
   'threeOfAKind', 'fourOfAKind', //'fullHouse',
-//  'smallStraight', 'largeStraight',
-//  'yatzy', 'chance'
+  'smallStraight', 'largeStraight',
+  'yatzy', 'chance'
 ]
 
 export default class Game {
@@ -22,7 +22,7 @@ export default class Game {
     this.totalDiceRolls = totalDiceRolls
     this.currentDice = [...currentDice]
     this.scorecard = {...scorecard}
-    this.done = CATEGORIES.every(k => this.scorecard[k])
+    this.done = CATEGORIES.every(k => this.scorecard.hasOwnProperty(k))
   }
 
   canRoll(hold) {
@@ -71,7 +71,7 @@ export default class Game {
       !this.done
       && this.turnRolls > 0
       && CATEGORIES.includes(category)
-      && !this.scorecard[category]
+      && !this.scorecard.hasOwnProperty(category)
       // && enforce joker rules
     )
   }
@@ -128,6 +128,42 @@ export default class Game {
           return acc
         }, {sum: 0, valid: false, counts: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}})
         newScorecard['fourOfAKind'] = tally.valid ? tally.sum : 0
+        break
+      case 'smallStraight':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc[die] = true
+          acc.valid = acc.valid || [
+            [1, 2, 3, 4],
+            [2, 3, 4, 5],
+            [3, 4, 5, 6]
+          ].some(straight => straight.every(value => acc.hasOwnProperty(value)))
+          return acc
+        }, {valid: false})
+        newScorecard['smallStraight'] = tally.valid ? 30 : 0
+        break
+      case 'largeStraight':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc[die] = true
+          acc.valid = acc.valid || [
+            [1, 2, 3, 4, 5],
+            [2, 3, 4, 5, 6]
+          ].some(straight => straight.every(value => acc.hasOwnProperty(value)))
+          return acc
+        }, {valid: false})
+        newScorecard['largeStraight'] = tally.valid ? 40 : 0
+        break
+      case 'yatzy':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc[die] += 1
+          acc.valid = acc[die] === 5
+          return acc
+        }, {valid: false, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0})
+        newScorecard['yatzy'] = tally.valid ? 50 : 0
+        break
+      case 'chance':
+        newScorecard['chance'] = this.currentDice.reduce((acc, die) => {
+          return acc + die
+        }, 0)
         break
     }
 
