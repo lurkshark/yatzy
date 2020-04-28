@@ -2,7 +2,7 @@ import speakeasy from 'speakeasy'
 
 const CATEGORIES = [
   'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
-  'threeOfAKind', 'fourOfAKind', //'fullHouse',
+  'threeOfAKind', 'fourOfAKind', 'fullHouse',
   'smallStraight', 'largeStraight',
   'yatzy', 'chance'
 ]
@@ -22,7 +22,6 @@ export default class Game {
     this.totalDiceRolls = totalDiceRolls
     this.currentDice = [...currentDice]
     this.scorecard = {...scorecard}
-    this.done = CATEGORIES.every(k => this.scorecard.hasOwnProperty(k))
   }
 
   canRoll(hold) {
@@ -78,8 +77,9 @@ export default class Game {
 
   score(category) {
     if (!this.canScore(category)) return false
+    const isYatzy = this.currentDice.every((die, _, dice) => die === dice[0])
     const newScorecard = {...this.scorecard}
-    let tally = {} // Used for reducing dice
+    let tally = {} // Used for reduce
     switch (category) {
       case 'aces':
         newScorecard['aces'] = this.currentDice.reduce((acc, die) => {
@@ -129,6 +129,18 @@ export default class Game {
         }, {sum: 0, valid: false, counts: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}})
         newScorecard['fourOfAKind'] = tally.valid ? tally.sum : 0
         break
+      case 'fullHouse':
+        tally = this.currentDice.reduce((acc, die) => {
+          acc.counts[die] += 1
+          const counts = Object.values(acc.counts)
+          acc.valid = acc.valid || (
+            counts.includes(3)
+            && counts.includes(2)
+          )
+          return acc
+        }, {valid: false, counts: {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}})
+        newScorecard['fullHouse'] = tally.valid ? 25 : 0
+        break
       case 'smallStraight':
         tally = this.currentDice.reduce((acc, die) => {
           acc[die] = true
@@ -153,12 +165,7 @@ export default class Game {
         newScorecard['largeStraight'] = tally.valid ? 40 : 0
         break
       case 'yatzy':
-        tally = this.currentDice.reduce((acc, die) => {
-          acc[die] += 1
-          acc.valid = acc[die] === 5
-          return acc
-        }, {valid: false, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0})
-        newScorecard['yatzy'] = tally.valid ? 50 : 0
+        newScorecard['yatzy'] = isYatzy ? 50 : 0
         break
       case 'chance':
         newScorecard['chance'] = this.currentDice.reduce((acc, die) => {
@@ -167,6 +174,11 @@ export default class Game {
         break
     }
 
+    newScorecard.bonus = newScorecard.bonus || 0
+    newScorecard.bonus += (
+      isYatzy && newScorecard.bonus < 3
+    ) ? 1 : 0
+
     return new Game(
       this.seed,
       0,
@@ -174,5 +186,29 @@ export default class Game {
       this.currentDice,
       newScorecard
     )
+  }
+
+  get done() {
+    return CATEGORIES.every(k => this.scorecard.hasOwnProperty(k))
+  }
+
+  get upperSubtotal() {
+    return [
+      'aces', 'twos', 'threes', 'fours', 'fives', 'sixes'
+    ].reduce((acc, category) => acc + (this.scorecard[category] || 0), 0)
+  }
+
+  get lowerSubtotal() {
+    return [
+      'threeOfAKind', 'fourOfAKind', 'fullHouse',
+      'smallStraight', 'largeStraight',
+      'yatzy', 'chance'
+    ].reduce((acc, category) => acc + (this.scorecard[category] || 0), 0)
+  }
+
+  get total() {
+    return this.upperSubtotal + this.lowerSubtotal
+      + (this.upperSubtotal > 62 ? 35 : 0)
+      + (this.scorecard.bonus * 100 || 0)
   }
 }

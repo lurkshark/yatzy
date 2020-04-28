@@ -11,6 +11,9 @@ export default class Gameplay {
 
   onStart(container) {
     const setup = (loader, resources) => {
+      // TODO: Back button sprite
+      this.backButton = new PIXI.Sprite()
+
       // Roll button sprite
       this.rollButton = new PIXI.Sprite()
       this.rollButton.x = 20
@@ -26,11 +29,12 @@ export default class Gameplay {
       const scorecardContainer = new PIXI.Container()
       this.scorecard = [
         'aces', 'twos', 'threes', 'fours', 'fives', 'sixes',
-        'threeOfAKind', 'fourOfAKind', 'smallStraight', 'largeStraight',
+        'threeOfAKind', 'fourOfAKind', 'fullHouse',
+        'smallStraight', 'largeStraight',
         'yatzy', 'chance'
       ].map((category) => {
         const sprite = new PIXI.Sprite()
-        const columnOffset = this.coordinator.width / 2 - 10
+        const columnOffset = (this.coordinator.width - 60) / 2 + 20
         const rowOffset = 42
         let label, description
         switch (category) {
@@ -53,64 +57,64 @@ export default class Gameplay {
             description = 'Add only threes'
             break
           case 'fours':
-            sprite.x = columnOffset
-            sprite.y = 0
+            sprite.x = 0
+            sprite.y = 3 * rowOffset
             label = 'Fours'
             description = 'Add only fours'
             break
           case 'fives':
-            sprite.x = columnOffset
-            sprite.y = rowOffset
+            sprite.x = 0
+            sprite.y = 4 * rowOffset
             label = 'Fives'
             description = 'Add only fives'
             break
           case 'sixes':
-            sprite.x = columnOffset
-            sprite.y = 2 * rowOffset
+            sprite.x = 0
+            sprite.y = 5 * rowOffset
             label = 'Sixes'
             description = 'Add only sixes'
             break
           case 'threeOfAKind':
-            sprite.x = 0
-            sprite.y = 3 * rowOffset
-            label = 'Three of a kind'
-            description = 'Score total of all 5 dice'
+            sprite.x = columnOffset
+            sprite.y = 0
+            label = '3 of a kind'
+            description = 'Add all dice'
             break
           case 'fourOfAKind':
-            sprite.x = 0
-            sprite.y = 4 * rowOffset
-            label = 'Four of a kind'
-            description = 'Score total of all 5 dice'
+            sprite.x = columnOffset
+            sprite.y = rowOffset
+            label = '4 of a kind'
+            description = 'Add all dice'
             break
           case 'fullHouse':
-            sprite.x = 0
-            sprite.y = 5 * rowOffset
+            sprite.x = columnOffset
+            sprite.y = 2 * rowOffset
             label = 'Full House'
             description = 'Score 25'
             break
           case 'smallStraight':
-            sprite.x = 0
-            sprite.y = 6 * rowOffset
-            label = 'Small Straight'
+            sprite.x = columnOffset
+            sprite.y = 3 * rowOffset
+            label = 'Sm Straight'
             description = 'Score 30'
             break
           case 'largeStraight':
-            sprite.x = 0
-            sprite.y = 7 * rowOffset
-            label = 'Large Straight'
+            sprite.x = columnOffset
+            sprite.y = 4 * rowOffset
+            label = 'Lg Straight'
             description = 'Score 40'
             break
           case 'yatzy':
-            sprite.x = 0
-            sprite.y = 8 * rowOffset
+            sprite.x = columnOffset
+            sprite.y = 5 * rowOffset
             label = 'Yatzy'
             description = 'Score 50'
             break
           case 'chance':
-            sprite.x = 0
-            sprite.y = 9 * rowOffset
+            sprite.x = columnOffset
+            sprite.y = 6 * rowOffset
             label = 'Chance'
-            description = 'Score total of all 5 dice'
+            description = 'Add all dice'
             break
         }
         sprite.interactive = true
@@ -121,9 +125,19 @@ export default class Gameplay {
       })
       // Scale the scorecard container
       scorecardContainer.x = 20
-      scorecardContainer.y = 20
+      scorecardContainer.y = 60
       // Add the scaled scorecard container
       this.container.addChild(scorecardContainer)
+
+      // Totals sprites
+      this.upperTotalSprite = new PIXI.Sprite()
+      this.upperTotalSprite.x = (this.coordinator.width - 60) / 2 - 30
+      this.upperTotalSprite.y = 6 * 42 + 70
+      //this.container.addChild(this.upperTotalSprite)
+      this.totalSprite = new PIXI.Sprite()
+      this.totalSprite.x = this.coordinator.width - 90
+      this.totalSprite.y = 7 * 42 + 70
+      this.container.addChild(this.totalSprite)
 
       // Dice container and sprites
       const diceContainer = new PIXI.Container()
@@ -148,6 +162,7 @@ export default class Gameplay {
       
       this.updateRollButtonTexture()
       this.updateScorecardTexture()
+      this.updateTotalsTexture()
       this.updateDiceTexture()
     }
 
@@ -183,13 +198,7 @@ export default class Gameplay {
   updateScorecardTexture() {
     for (let score of this.scorecard) {
       // Rectangle backing
-      const width = [
-        'threeOfAKind', 'fourOfAKind',
-        'smallStraight', 'largeStraight',
-        'yatzy', 'chance'
-      ].includes(score.category)
-        ? this.coordinator.width / 2 + 5
-        : this.coordinator.width / 2 - 30
+      const width = (this.coordinator.width - 60) / 2
       const backing = new PIXI.Graphics()
         .beginFill(0xffffff)
         .drawRect(0, 0, width, 42)
@@ -233,6 +242,32 @@ export default class Gameplay {
       const texture = this.app.renderer.generateTexture(backing)
       score.sprite.texture = texture
     }
+  }
+
+  updateTotalsTexture() {
+    const upper = new PIXI.Container()
+    upper.addChild(
+      new PIXI.Text(this.game.upperSubtotal, {
+        fontFamily: 'OpenSans',
+        fill: '#181d33',
+        fontSize: 38
+      })
+    )
+
+    const upperTexture = this.app.renderer.generateTexture(upper)
+    this.upperTotalSprite.texture = upperTexture
+    
+    const total = new PIXI.Container()
+    total.addChild(
+      new PIXI.Text(this.game.total, {
+        fontFamily: 'OpenSans',
+        fill: '#181d33',
+        fontSize: 38
+      })
+    )
+
+    const totalTexture = this.app.renderer.generateTexture(total)
+    this.totalSprite.texture = totalTexture
   }
 
   updateDiceTexture() {
@@ -305,6 +340,7 @@ export default class Gameplay {
 
     this.updateRollButtonTexture()
     this.updateScorecardTexture()
+    this.updateTotalsTexture()
     this.updateDiceTexture()
 
     if (this.game.done) {

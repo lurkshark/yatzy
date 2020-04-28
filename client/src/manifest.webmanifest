@@ -1,11 +1,11 @@
 {
-  "name": "Yatzy Deathmatch",
+  "name": "Yatzy Laboratory",
   "short_name": "Yatzy",
   "start_url": "/",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#000000",
-  "theme_color": "#000000",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
   "icons": [
     {
       "src": "yatzy/assets/icon-160x160.png",
