@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import WebFont from 'webfontloader'
 import Menu from './menu'
 import './assets'
 
@@ -25,8 +26,13 @@ export default class Yatzy {
       this.update(delta)
     })
 
-    // Load the menu with height adjusted
-    this.gotoScene(new Menu(this.app, this))
+    WebFont.load({
+      // Load the menu with height adjusted
+      active: () => this.gotoScene(new Menu(this.app, this)),
+      custom: {
+        families: ['Ubuntu', 'OpenSans']
+      }
+    })
   }
 
   // Destroy current scene and load new

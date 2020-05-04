@@ -12,7 +12,7 @@ export default class Menu {
   onStart(container) {
     const setup = (loader, resources) => {
       const headerText = new PIXI.Text('Yatzy\nLaboratory', {
-        fontFamily: ['Ubuntu', 'sans-serif'],
+        fontFamily: 'Ubuntu',
         fill: '#333333',
         fontSize: 54
       })
@@ -21,13 +21,13 @@ export default class Menu {
       this.container.addChild(headerText)
       
       const startNewGameText = new PIXI.Text('Start a new experiment', {
-        fontFamily: ['Ubuntu', 'sans-serif'],
+        fontFamily: 'Ubuntu',
         fill: '#333333',
         fontSize: 24
       })
 
       const startNewGameDescriptionText = new PIXI.Text('Play a fresh game of yatzy', {
-        fontFamily: ['OpenSans', 'sans-serif'],
+        fontFamily: 'OpenSans',
         fill: '#666666',
         fontSize: 14
       })
@@ -43,13 +43,13 @@ export default class Menu {
       this.container.addChild(startNewGameDescriptionText)
 
       const reviewNotesText = new PIXI.Text('Review your notes', {
-        fontFamily: ['Ubuntu', 'sans-serif'],
+        fontFamily: 'Ubuntu',
         fill: '#333333',
         fontSize: 24
       })
 
       const reviewNotesDescriptionText = new PIXI.Text('View game stats and history', {
-        fontFamily: ['OpenSans', 'sans-serif'],
+        fontFamily: 'OpenSans',
         fill: '#666666',
         fontSize: 14
       })

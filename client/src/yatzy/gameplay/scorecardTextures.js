@@ -95,18 +95,18 @@ export default function scorecardTextures(width, game, category, isSelected) {
     .moveTo(36, 40).lineTo(width, 40)
     .lineStyle(0)
   const label = new PIXI.Text(text[category].label, {
-    fontFamily: ['Ubuntu', 'sans-serif'],
+    fontFamily: 'Ubuntu',
     fill: '#333333',
     fontSize: 14
   })
   const description = new PIXI.Text(text[category].label, {
-    fontFamily: ['OpenSans', 'sans-serif'],
+    fontFamily: 'OpenSans',
     fill: '#666666',
     fontSize: 10
   })
   const pointsFill = isSelected ? '#e1a0ab' : '#333333'
   const points = new PIXI.Text(score, {
-    fontFamily: ['OpenSans', 'sans-serif'],
+    fontFamily: 'OpenSans',
     fill: pointsFill,
     fontSize: 26
   })

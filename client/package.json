@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "pixi.js": "~5.2.0",
-    "speakeasy": "^2.0.0"
+    "speakeasy": "^2.0.0",
+    "webfontloader": "^1.6.28"
   },
   "browserslist": "firefox esr",
   "devDependencies": {
