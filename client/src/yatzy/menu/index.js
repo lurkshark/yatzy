@@ -1,63 +1,89 @@
 import * as PIXI from 'pixi.js'
-import {flamingDeathmatch, yacht} from './assets'
 import Gameplay from '../gameplay'
+import {scientistSprites} from './assets'
 
 export default class Menu {
 
-  constructor(app, gotoScene, options = {}) {
+  constructor(app, coordinator) {
     this.app = app
-    this.gotoScene = gotoScene
-    this.options = {...options}
+    this.coordinator = coordinator
   }
 
   onStart(container) {
     const setup = (loader, resources) => {
-      const yatzyText = new PIXI.Text('Yatzy', new PIXI.TextStyle({
-        fontFamily: 'Arial',
-        strokeThickness: 2,
-        stroke: '#000000',
-        fill: ['#ff9999', '#990000'],
-        fontWeight: 700,
-        fontSize: 72
-      }))
-
-      yatzyText.x = 50
-      yatzyText.y = 15
-      this.container.addChild(yatzyText)
+      const headerText = new PIXI.Text('Yatzy\nLaboratory', {
+        fontFamily: ['Ubuntu', 'sans-serif'],
+        fill: '#333333',
+        fontSize: 54
+      })
+      headerText.x = 35
+      headerText.y = 25
+      this.container.addChild(headerText)
       
-      const deathmatchText = new PIXI.Sprite(resources.deathmatch.texture)
-      deathmatchText.width = this.options.width - 50
-      deathmatchText.scale.y = deathmatchText.scale.x
-      deathmatchText.x = this.options.width / 2
-      deathmatchText.anchor.set(0.5, 0)
-      deathmatchText.y = 100
-      this.container.addChild(deathmatchText)
-      
-      const startNewGameButton = new PIXI.Text('Start a new game', new PIXI.TextStyle({
-        fontFamily: 'Comic Neue',
-        strokeThickness: 2,
-        stroke: '#ffffff',
-        fill: '#ff34ff',
-        fontSize: 36
-      }))
+      const startNewGameText = new PIXI.Text('Start a new experiment', {
+        fontFamily: ['Ubuntu', 'sans-serif'],
+        fill: '#333333',
+        fontSize: 24
+      })
 
-      startNewGameButton.x = 50
-      startNewGameButton.y = 250
-      startNewGameButton.interactive = true
-      startNewGameButton.buttonMode = true
-      startNewGameButton.on('pointerup', () => this.onStartNewGame())
-      this.container.addChild(startNewGameButton)
+      const startNewGameDescriptionText = new PIXI.Text('Play a fresh game of yatzy', {
+        fontFamily: ['OpenSans', 'sans-serif'],
+        fill: '#666666',
+        fontSize: 14
+      })
+
+      startNewGameText.x = 35
+      startNewGameText.y = 250
+      startNewGameDescriptionText.x = 35
+      startNewGameDescriptionText.y = 275
+      startNewGameText.interactive = true
+      startNewGameText.buttonMode = true
+      startNewGameText.on('pointerup', () => this.onStartNewGame())
+      this.container.addChild(startNewGameText)
+      this.container.addChild(startNewGameDescriptionText)
+
+      const reviewNotesText = new PIXI.Text('Review your notes', {
+        fontFamily: ['Ubuntu', 'sans-serif'],
+        fill: '#333333',
+        fontSize: 24
+      })
+
+      const reviewNotesDescriptionText = new PIXI.Text('View game stats and history', {
+        fontFamily: ['OpenSans', 'sans-serif'],
+        fill: '#666666',
+        fontSize: 14
+      })
+
+      reviewNotesText.x = 35
+      reviewNotesText.y = 320
+      reviewNotesDescriptionText.x = 35
+      reviewNotesDescriptionText.y = 345
+      reviewNotesText.interactive = true
+      reviewNotesText.buttonMode = true
+      reviewNotesText.on('pointerup', () => {})
+      this.container.addChild(reviewNotesText)
+      this.container.addChild(reviewNotesDescriptionText)
+
+      const scientistSprite = new PIXI.Sprite()
+      scientistSprite.texture = resources.scientist.texture
+      scientistSprite.anchor.set(1)
+      scientistSprite.x = this.coordinator.width - 20
+      scientistSprite.y = this.coordinator.height - 20
+      scientistSprite.height = this.coordinator.height / 3
+      scientistSprite.scale.x = scientistSprite.scale.y
+      this.container.addChild(scientistSprite)
     }
     
     this.container = container
-    PIXI.Loader.shared
-      .add('deathmatch', flamingDeathmatch)
-      .add('yacht', yacht)
-      .load(setup)
+    const randomScientistIndex = Math.floor(Math.random() * scientistSprites.length)
+    if (!PIXI.Loader.shared.resources.hasOwnProperty('scientist')) {
+      PIXI.Loader.shared.add('scientist', scientistSprites[randomScientistIndex])
+    }
+    PIXI.Loader.shared.load(setup)
   }
 
   onStartNewGame() {
-    this.gotoScene(new Gameplay(this.app, this.gotoScene, this.options))
+    this.coordinator.gotoScene(new Gameplay(this.app, this.coordinator))
   }
 
   onUpdate(delta) {}
