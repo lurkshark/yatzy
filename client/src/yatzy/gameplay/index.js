@@ -1,6 +1,8 @@
 import * as PIXI from 'pixi.js'
 import Menu from '../menu'
 import Game from './game'
+import scorecardTextures from './scorecardTextures'
+import diceTextures from './diceTextures'
 
 export default class Gameplay {
 
@@ -11,19 +13,38 @@ export default class Gameplay {
 
   onStart(container) {
     const setup = (loader, resources) => {
-      // TODO: Back button sprite
       this.backButton = new PIXI.Sprite()
+      this.backButton.x = 20
+      this.backButton.y = 20
+      this.backButton.interactive = true
+      this.backButton.buttonMode = true
+      // Add click handler and add to container
+      this.backButton.on('pointerup', () => this.onClickBackButton())
+      this.container.addChild(this.backButton)
+      this.updateBackButtonTexture()
+
 
       // Roll button sprite
       this.rollButton = new PIXI.Sprite()
       this.rollButton.x = 20
-      this.rollButton.y = this.coordinator.height - 60
+      this.rollButton.y = this.coordinator.height - 70
       this.rollButton.interactive = true
       this.rollButton.buttonMode = true
       // Add click handler and add to container
       this.rollButton.on('pointerup', () => this.onClickRollButton())
       this.container.addChild(this.rollButton)
       this.updateRollButtonTexture()
+
+      // Score button sprite
+      this.scoreButton = new PIXI.Sprite()
+      this.scoreButton.x = this.coordinator.width / 2 + 10
+      this.scoreButton.y = this.coordinator.height - 70
+      this.scoreButton.interactive = true
+      this.scoreButton.buttonMode = true
+      // Add click handler and add to container
+      this.scoreButton.on('pointerup', () => this.onClickScoreButton())
+      this.container.addChild(this.scoreButton)
+      this.updateScoreButtonTexture()
 
       // Scorecard container and sprites
       const scorecardContainer = new PIXI.Container()
@@ -41,102 +62,76 @@ export default class Gameplay {
           case 'aces':
             sprite.x = 0
             sprite.y = 0
-            label = 'Aces'
-            description = 'Add only ones'
             break
           case 'twos':
             sprite.x = 0
             sprite.y = rowOffset
-            label = 'Twos'
-            description = 'Add only twos'
             break
           case 'threes':
             sprite.x = 0
             sprite.y = 2 * rowOffset
-            label = 'Threes'
-            description = 'Add only threes'
             break
           case 'fours':
             sprite.x = 0
             sprite.y = 3 * rowOffset
-            label = 'Fours'
-            description = 'Add only fours'
             break
           case 'fives':
             sprite.x = 0
             sprite.y = 4 * rowOffset
-            label = 'Fives'
-            description = 'Add only fives'
             break
           case 'sixes':
             sprite.x = 0
             sprite.y = 5 * rowOffset
-            label = 'Sixes'
-            description = 'Add only sixes'
             break
           case 'threeOfAKind':
             sprite.x = columnOffset
             sprite.y = 0
-            label = '3 of a kind'
-            description = 'Add all dice'
             break
           case 'fourOfAKind':
             sprite.x = columnOffset
             sprite.y = rowOffset
-            label = '4 of a kind'
-            description = 'Add all dice'
             break
           case 'fullHouse':
             sprite.x = columnOffset
             sprite.y = 2 * rowOffset
-            label = 'Full House'
-            description = 'Score 25'
             break
           case 'smallStraight':
             sprite.x = columnOffset
             sprite.y = 3 * rowOffset
-            label = 'Sm Straight'
-            description = 'Score 30'
             break
           case 'largeStraight':
             sprite.x = columnOffset
             sprite.y = 4 * rowOffset
-            label = 'Lg Straight'
-            description = 'Score 40'
             break
           case 'yatzy':
             sprite.x = columnOffset
             sprite.y = 5 * rowOffset
-            label = 'Yatzy'
-            description = 'Score 50'
             break
           case 'chance':
             sprite.x = columnOffset
             sprite.y = 6 * rowOffset
-            label = 'Chance'
-            description = 'Add all dice'
             break
         }
         sprite.interactive = true
         sprite.buttonMode = true
         scorecardContainer.addChild(sprite)
         sprite.on('pointerup', () => this.onClickScorecard(category))
-        return {category: category, label: label, description: description,  sprite: sprite}
+        return {category: category, sprite: sprite}
       })
       // Scale the scorecard container
       scorecardContainer.x = 20
-      scorecardContainer.y = 60
+      scorecardContainer.y = 50
       // Add the scaled scorecard container
       this.container.addChild(scorecardContainer)
 
       // Totals sprites
       this.upperTotalSprite = new PIXI.Sprite()
       this.upperTotalSprite.x = (this.coordinator.width - 60) / 2 - 30
-      this.upperTotalSprite.y = 6 * 42 + 70
+      this.upperTotalSprite.y = 6 * 42 + 60
       //this.container.addChild(this.upperTotalSprite)
       this.totalSprite = new PIXI.Sprite()
       this.totalSprite.x = this.coordinator.width - 90
-      this.totalSprite.y = 7 * 42 + 70
+      this.totalSprite.y = 7 * 42 + 60
       this.container.addChild(this.totalSprite)
 
       // Dice container and sprites
@@ -154,9 +149,9 @@ export default class Gameplay {
       })
       // Scale the dice container
       diceContainer.x = 20
-      diceContainer.y = this.coordinator.height - 130
       diceContainer.width = this.coordinator.width - 40
       diceContainer.scale.y = diceContainer.scale.x
+      diceContainer.y = this.coordinator.height - diceContainer.height - 90
       // Add the scaled dice container
       this.container.addChild(diceContainer)
       
@@ -168,26 +163,59 @@ export default class Gameplay {
 
     this.game = new Game()
     this.container = container
-    PIXI.Loader.shared
-      .load(setup)
+    PIXI.Loader.shared.load(setup)
+  }
+
+  updateBackButtonTexture() {
+    // Button body
+    const button = new PIXI.Graphics()
+      .drawRect(0, 0, 290, 20)
+      .lineStyle({width: 1, color: 0x666666})
+      .moveTo(0, 10).lineTo(12, 10)
+      .moveTo(0, 10).lineTo(5, 5)
+      .moveTo(0, 10).lineTo(5, 15)
+    const headerText = new PIXI.Text('Yatzy Laboratory', {
+      fontFamily: ['Ubuntu', 'sans-serif'],
+      fill: '#333333',
+      fontSize: 16
+    })
+    const subHeaderText = new PIXI.Text('Experiment #612710', {
+      fontFamily: ['OpenSans', 'sans-serif'],
+      fill: '#666666',
+      fontSize: 12
+    })
+    headerText.x = 20
+    headerText.y = 0
+    subHeaderText.x = 148
+    subHeaderText.y = 3
+    button.addChild(headerText)
+    button.addChild(subHeaderText)
+    const texture = this.app.renderer.generateTexture(button)
+    this.backButton.texture = texture
   }
 
   updateRollButtonTexture() {
     // Button body
-    const isActive = this.game.turnRolls < 3 && !this.game.done
+    const isVisible = this.game.turnRolls < 3 && !this.game.done
+    const isFullWidth = this.game.turnRolls === 0 && false
+    const isActive = isVisible
+
+    const buttonWidth = isFullWidth
+      ? this.coordinator.width - 40
+      : (this.coordinator.width - 40) / 2 - 10
     const button = new PIXI.Graphics()
-      .beginFill(isActive ? 0x6784b2 : 0xcbe2f8)
-      .drawRoundedRect(0, 0, this.coordinator.width - 40, 40, 4)
+      .beginFill(0x4268a2, isActive ? 1 : 0.35)
+      .drawRoundedRect(0, 0, buttonWidth, 50, 4)
       .endFill()
     // Button text
     const buttonText = new PIXI.Text('Roll', {
-      fontFamily: 'OpenSans',
+      fontFamily: ['OpenSans', 'sans-serif'],
       fill: '#ffffff',
       fontSize: 18
     })
     buttonText.anchor.set(0.5)
-    buttonText.x = (this.coordinator.width - 40) / 2
-    buttonText.y = 20
+    buttonText.x = buttonWidth / 2
+    buttonText.y = 25
     
     // Add text to button
     button.addChild(buttonText)
@@ -195,51 +223,42 @@ export default class Gameplay {
     this.rollButton.texture = texture
   }
 
+  updateScoreButtonTexture() {
+    // Button body
+    const isVisible = this.game.turnRolls > 0 && !this.game.done
+    const isFullWidth = this.game.turnRolls === 3 && false
+    const isActive = isVisible && !!this.selectedCategory
+
+    const buttonWidth = isFullWidth
+      ? this.coordinator.width - 40
+      : (this.coordinator.width - 40) / 2 - 10
+    const button = new PIXI.Graphics()
+      .beginFill(0xb25d96, isActive ? 1 : 0.35)
+      .drawRoundedRect(0, 0, buttonWidth, 50, 4)
+      .endFill()
+    // Button text
+    const buttonText = new PIXI.Text('Score', {
+      fontFamily: ['OpenSans', 'sans-serif'],
+      fill: '#ffffff',
+      fontSize: 18
+    })
+    buttonText.anchor.set(0.5)
+    buttonText.x = buttonWidth / 2
+    buttonText.y = 25
+    
+    // Add text to button
+    button.addChild(buttonText)
+    const texture = this.app.renderer.generateTexture(button)
+    this.scoreButton.texture = texture
+  }
+
   updateScorecardTexture() {
     for (let score of this.scorecard) {
-      // Rectangle backing
-      const width = (this.coordinator.width - 60) / 2
-      const backing = new PIXI.Graphics()
-        .beginFill(0xffffff)
-        .drawRect(0, 0, width, 42)
-        .endFill()
-      const icon = new PIXI.Graphics()
-        .beginFill(0xa75b95)
-        .drawRoundedRect(0, 6, 24, 24, 4)
-        .endFill()
-      const underline = new PIXI.Graphics()
-        .lineStyle({width: 0.5, color: 0xcccccc})
-        .moveTo(36, 38).lineTo(width, 38)
-        .lineStyle(0)
-      const label = new PIXI.Text(score.label, {
-        fontFamily: 'Ubuntu',
-        fill: '#181d33',
-        fontSize: 14
-      })
-      const description = new PIXI.Text(score.description, {
-        fontFamily: 'OpenSans',
-        fill: '#666666',
-        fontSize: 10
-      })
-      const pointsValue = this.game.scorecard[score.category]
-      const points = new PIXI.Text(pointsValue, {
-        fontFamily: 'OpenSans',
-        fill: '#181d33',
-        fontSize: 26
-      })
-      label.x = 34
-      label.y = 4
-      description.x = 34
-      description.y = 20
-      points.x = width - (pointsValue > 9 ? 34 : 20)
-      points.y = 4
-      backing.addChild(icon)
-      backing.addChild(underline)
-      backing.addChild(label)
-      backing.addChild(description)
-      backing.addChild(points)
       // Generate the texture and update sprite
-      const texture = this.app.renderer.generateTexture(backing)
+      const width = (this.coordinator.width - 60) / 2
+      const isSelected = this.selectedCategory === score.category
+      const cell = scorecardTextures(width, this.game, score.category, isSelected)
+      const texture = this.app.renderer.generateTexture(cell)
       score.sprite.texture = texture
     }
   }
@@ -248,8 +267,8 @@ export default class Gameplay {
     const upper = new PIXI.Container()
     upper.addChild(
       new PIXI.Text(this.game.upperSubtotal, {
-        fontFamily: 'OpenSans',
-        fill: '#181d33',
+        fontFamily: ['OpenSans', 'sans-serif'],
+        fill: '#666666',
         fontSize: 38
       })
     )
@@ -260,8 +279,8 @@ export default class Gameplay {
     const total = new PIXI.Container()
     total.addChild(
       new PIXI.Text(this.game.total, {
-        fontFamily: 'OpenSans',
-        fill: '#181d33',
+        fontFamily: ['OpenSans', 'sans-serif'],
+        fill: '#333333',
         fontSize: 38
       })
     )
@@ -272,55 +291,18 @@ export default class Gameplay {
 
   updateDiceTexture() {
     for (let die of this.dice) {
-      const face = new PIXI.Graphics()
       const value = this.game.currentDice[die.index] || die.index + 1
       const isActive = this.game.turnRolls > 0 && !this.game.done
-
-      // Outline if holding
-      if (die.holding) {
-        face.lineStyle(8, 0xcbe2f8)
-      }
-
-      // Rounded square body
-      face.beginFill(isActive ? 0xa75b95 : 0xcb93a6)
-        .drawRoundedRect(0, 0, 100, 100, 12)
-        .lineStyle(0)
-        .endFill()
-
-      // Draw the pips
-      face.beginFill(isActive ? 0xffffff : 0xcccccc)
-      // Top left
-      if ([3, 4, 5, 6].includes(value)) {
-        face.drawCircle(28, 28, 8)
-      }
-      // Top right
-      if ([2, 4, 5, 6].includes(value)) {
-        face.drawCircle(72, 28, 8)
-      }
-      // Bottom left
-      if ([2, 4, 5, 6].includes(value)) {
-        face.drawCircle(28, 72, 8)
-      }
-      // Bottom right
-      if ([3, 4, 5, 6].includes(value)) {
-        face.drawCircle(72, 72, 8)
-      }
-      // Middle
-      if ([1, 3, 5].includes(value)) {
-        face.drawCircle(50, 50, 8)
-      }
-      // Left and right
-      if (value === 6) {
-        face.drawCircle(28, 50, 8)
-        face.drawCircle(72, 50, 8)
-      }
-      // End pips
-      face.endFill()
+      const face = diceTextures(value, isActive, die.holding)
 
       // Generate the texture and update sprite
       const texture = this.app.renderer.generateTexture(face)
       die.sprite.texture = texture
     }
+  }
+
+  onClickBackButton() {
+    this.coordinator.gotoScene(new Menu(this.app, this.coordinator))
   }
 
   onClickRollButton() {
@@ -331,23 +313,25 @@ export default class Gameplay {
     this.updateDiceTexture()
   }
 
-  onClickScorecard(category) {
-    if (!this.game.canScore(category)) return
-    this.game = this.game.score(category)
+  onClickScoreButton() {
+    if (!this.game.canScore(this.selectedCategory)) return
+    this.game = this.game.score(this.selectedCategory)
     for (let die of this.dice) {
       die.holding = false
     }
-
+    this.selectedCategory = false
     this.updateRollButtonTexture()
+    this.updateScoreButtonTexture()
     this.updateScorecardTexture()
-    this.updateTotalsTexture()
     this.updateDiceTexture()
+    this.updateTotalsTexture()
+  }
 
-    if (this.game.done) {
-      setTimeout(() => {
-        this.coordinator.gotoScene(new Menu(this.app, this.coordinator))
-      }, 3000)
-    }
+  onClickScorecard(category) {
+    if (!this.game.canScore(category)) return
+    this.selectedCategory = category
+    this.updateScoreButtonTexture()
+    this.updateScorecardTexture()
   }
 
   onClickDice(die) {

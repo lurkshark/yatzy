@@ -3,17 +3,14 @@ import Menu from './menu'
 import './assets'
 
 window.PIXI = PIXI
-//PIXI.settings.ROUND_PIXELS = true
-//PIXI.settings.SCALE_MODE = PIXI.SCALE_MODES.NEAREST
 PIXI.settings.RESOLUTION = window.devicePixelRatio || 1
-//PIXI.settings.PRECISION_FRAGMENT = 'highp'
 
 export default class Yatzy {
 
   constructor(window, body) {
     this.app = new PIXI.Application({
       resizeTo: window,
-      backgroundColor: 0xffffff,
+      backgroundColor: 0xe8f0f3,
       resolution: window.devicePixelRatio || 1,
       autoDensity: true
     })

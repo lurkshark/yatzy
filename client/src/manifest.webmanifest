@@ -4,13 +4,18 @@
   "start_url": "/",
   "display": "fullscreen",
   "orientation": "portrait",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#e8f0f3",
+  "theme_color": "#e8f0f3",
   "icons": [
     {
       "src": "yatzy/assets/icon-160x160.png",
       "type": "image/png",
       "sizes": "160x160"
+    },
+    {
+      "src": "yatzy/menu/assets/g6662.png",
+      "type": "image/png",
+      "sizes": "557x706"
     }
   ]
 }

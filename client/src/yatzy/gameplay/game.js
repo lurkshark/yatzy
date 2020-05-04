@@ -176,7 +176,10 @@ export default class Game {
 
     newScorecard.bonus = newScorecard.bonus || 0
     newScorecard.bonus += (
-      isYatzy && newScorecard.bonus < 3
+      isYatzy
+      && this.scorecard.hasOwnProperty('yatzy')
+      && this.scorecard.yatzy > 0
+      && newScorecard.bonus < 3
     ) ? 1 : 0
 
     return new Game(
