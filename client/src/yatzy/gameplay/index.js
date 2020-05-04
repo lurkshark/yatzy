@@ -175,12 +175,12 @@ export default class Gameplay {
       .moveTo(0, 10).lineTo(5, 5)
       .moveTo(0, 10).lineTo(5, 15)
     const headerText = new PIXI.Text('Yatzy Laboratory', {
-      fontFamily: ['Ubuntu', 'sans-serif'],
+      fontFamily: 'Ubuntu',
       fill: '#333333',
       fontSize: 16
     })
     const subHeaderText = new PIXI.Text('Experiment #612710', {
-      fontFamily: ['OpenSans', 'sans-serif'],
+      fontFamily: 'OpenSans',
       fill: '#666666',
       fontSize: 12
     })
@@ -209,7 +209,7 @@ export default class Gameplay {
       .endFill()
     // Button text
     const buttonText = new PIXI.Text('Roll', {
-      fontFamily: ['OpenSans', 'sans-serif'],
+      fontFamily: 'OpenSans',
       fill: '#ffffff',
       fontSize: 18
     })
@@ -238,7 +238,7 @@ export default class Gameplay {
       .endFill()
     // Button text
     const buttonText = new PIXI.Text('Score', {
-      fontFamily: ['OpenSans', 'sans-serif'],
+      fontFamily: 'OpenSans',
       fill: '#ffffff',
       fontSize: 18
     })
@@ -267,7 +267,7 @@ export default class Gameplay {
     const upper = new PIXI.Container()
     upper.addChild(
       new PIXI.Text(this.game.upperSubtotal, {
-        fontFamily: ['OpenSans', 'sans-serif'],
+        fontFamily: 'OpenSans',
         fill: '#666666',
         fontSize: 38
       })
@@ -279,7 +279,7 @@ export default class Gameplay {
     const total = new PIXI.Container()
     total.addChild(
       new PIXI.Text(this.game.total, {
-        fontFamily: ['OpenSans', 'sans-serif'],
+        fontFamily: 'OpenSans',
         fill: '#333333',
         fontSize: 38
       })
