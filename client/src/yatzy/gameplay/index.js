@@ -120,18 +120,18 @@ export default class Gameplay {
       })
       // Scale the scorecard container
       scorecardContainer.x = 20
-      scorecardContainer.y = 50
+      scorecardContainer.y = 60
       // Add the scaled scorecard container
       this.container.addChild(scorecardContainer)
 
       // Totals sprites
       this.upperTotalSprite = new PIXI.Sprite()
-      this.upperTotalSprite.x = (this.coordinator.width - 60) / 2 - 30
-      this.upperTotalSprite.y = 6 * 42 + 60
-      //this.container.addChild(this.upperTotalSprite)
+      this.upperTotalSprite.x = (this.coordinator.width - 60) / 2 - 10
+      this.upperTotalSprite.y = 6 * 42 + 70
+      this.container.addChild(this.upperTotalSprite)
       this.totalSprite = new PIXI.Sprite()
       this.totalSprite.x = this.coordinator.width - 90
-      this.totalSprite.y = 7 * 42 + 60
+      this.totalSprite.y = 7 * 42 + 70
       this.container.addChild(this.totalSprite)
 
       // Dice container and sprites
@@ -269,7 +269,7 @@ export default class Gameplay {
       new PIXI.Text(this.game.upperSubtotal, {
         fontFamily: 'OpenSans',
         fill: '#666666',
-        fontSize: 38
+        fontSize: 22
       })
     )
 
@@ -277,14 +277,12 @@ export default class Gameplay {
     this.upperTotalSprite.texture = upperTexture
     
     const total = new PIXI.Container()
-    total.addChild(
-      new PIXI.Text(this.game.total, {
-        fontFamily: 'OpenSans',
-        fill: '#333333',
-        fontSize: 38
-      })
-    )
-
+    const totalText = new PIXI.Text(this.game.total, {
+      fontFamily: 'OpenSans',
+      fill: '#333333',
+      fontSize: 38
+    })
+    total.addChild(totalText)
     const totalTexture = this.app.renderer.generateTexture(total)
     this.totalSprite.texture = totalTexture
   }
