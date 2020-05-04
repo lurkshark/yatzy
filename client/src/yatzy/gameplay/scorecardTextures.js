@@ -89,7 +89,7 @@ export default function scorecardTextures(width, game, category, isSelected) {
   icon.width = 24
   icon.scale.y = icon.scale.x
   icon.x = 0
-  icon.y = 6
+  icon.y = 7
   const underline = new PIXI.Graphics()
     .lineStyle({width: 0.5, color: 0xe1a0ab})
     .moveTo(36, 40).lineTo(width, 40)

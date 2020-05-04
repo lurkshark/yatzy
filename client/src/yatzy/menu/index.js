@@ -20,6 +20,7 @@ export default class Menu {
       headerText.y = 25
       this.container.addChild(headerText)
       
+      const newGameContainer = new PIXI.Container()
       const startNewGameText = new PIXI.Text('Start a new experiment', {
         fontFamily: 'Ubuntu',
         fill: '#333333',
@@ -32,16 +33,18 @@ export default class Menu {
         fontSize: 14
       })
 
-      startNewGameText.x = 35
-      startNewGameText.y = 250
-      startNewGameDescriptionText.x = 35
-      startNewGameDescriptionText.y = 275
-      startNewGameText.interactive = true
-      startNewGameText.buttonMode = true
-      startNewGameText.on('pointerup', () => this.onStartNewGame())
-      this.container.addChild(startNewGameText)
-      this.container.addChild(startNewGameDescriptionText)
+      startNewGameDescriptionText.y = 25
 
+      newGameContainer.x = 35
+      newGameContainer.y = 200
+      newGameContainer.interactive = true
+      newGameContainer.buttonMode = true
+      newGameContainer.on('pointerup', () => this.onStartNewGame())
+      newGameContainer.addChild(startNewGameText)
+      newGameContainer.addChild(startNewGameDescriptionText)
+      this.container.addChild(newGameContainer)
+
+      const viewHistoryContainer = new PIXI.Container()
       const reviewNotesText = new PIXI.Text('Review your notes', {
         fontFamily: 'Ubuntu',
         fill: '#333333',
@@ -54,15 +57,17 @@ export default class Menu {
         fontSize: 14
       })
 
-      reviewNotesText.x = 35
-      reviewNotesText.y = 320
-      reviewNotesDescriptionText.x = 35
-      reviewNotesDescriptionText.y = 345
-      reviewNotesText.interactive = true
-      reviewNotesText.buttonMode = true
-      reviewNotesText.on('pointerup', () => {})
-      this.container.addChild(reviewNotesText)
-      this.container.addChild(reviewNotesDescriptionText)
+      reviewNotesDescriptionText.y = 25
+
+      viewHistoryContainer.x = 35
+      viewHistoryContainer.y = 270
+      viewHistoryContainer.alpha = 0.35
+      viewHistoryContainer.interactive = true
+      viewHistoryContainer.buttonMode = true
+      viewHistoryContainer.on('pointerup', () => {})
+      viewHistoryContainer.addChild(reviewNotesText)
+      viewHistoryContainer.addChild(reviewNotesDescriptionText)
+      this.container.addChild(viewHistoryContainer)
 
       const scientistSprite = new PIXI.Sprite()
       scientistSprite.texture = resources.scientist.texture
