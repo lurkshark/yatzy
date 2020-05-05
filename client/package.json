@@ -9,11 +9,11 @@
     "clean": "rimraf ./dist ./.cache"
   },
   "dependencies": {
+    "localforage": "^1.7.3",
     "pixi.js": "~5.2.0",
     "speakeasy": "^2.0.0",
     "webfontloader": "^1.6.28"
   },
-  "browserslist": "firefox esr",
   "devDependencies": {
     "@babel/core": "~7.9.0",
     "@babel/plugin-transform-runtime": "~7.9.0",
@@ -21,6 +21,9 @@
     "http-server": "^0.12.1",
     "jest": "~24.9.0",
     "parcel-bundler": "~1.12.4",
+    "parcel-plugin-sw-precache": "^1.1.2",
     "rimraf": "~2.6.2"
-  }
+  },
+  "browserslist": "firefox esr",
+  "sw-precache": {}
 }

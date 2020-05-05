@@ -8,14 +8,14 @@
   "theme_color": "#e8f0f3",
   "icons": [
     {
-      "src": "yatzy/assets/icon-160x160.png",
+      "src": "yatzy/assets/icon-flask-192x192.png",
       "type": "image/png",
-      "sizes": "160x160"
+      "sizes": "192x192"
     },
     {
-      "src": "yatzy/menu/assets/g6662.png",
+      "src": "yatzy/assets/icon-flask-512x512.png",
       "type": "image/png",
-      "sizes": "557x706"
+      "sizes": "512x512"
     }
   ]
 }
