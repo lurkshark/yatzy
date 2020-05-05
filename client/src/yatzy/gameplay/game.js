@@ -38,7 +38,6 @@ export default class Game {
 
   roll(hold) {
     if (!this.canRoll(hold)) return false
-    let newTotalDiceRolls = this.totalDiceRolls
     const newCurrentDice = [...this.currentDice]
     const diceValue = (offset) => {
       const otp = +speakeasy.hotp({
@@ -49,6 +48,7 @@ export default class Game {
       return (otp % 6) + 1
     }
 
+    let newTotalDiceRolls = this.totalDiceRolls
     for (let i = 0; i < 5; i++) {
       if (!hold[i]) {
         newCurrentDice[i] = diceValue(newTotalDiceRolls)
@@ -189,6 +189,13 @@ export default class Game {
       this.currentDice,
       newScorecard
     )
+  }
+
+  get id() {
+    return speakeasy.hotp({
+      secret: this.seed,
+      counter: 0
+    })
   }
 
   get done() {

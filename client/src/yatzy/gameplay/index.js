@@ -179,7 +179,8 @@ export default class Gameplay {
       fill: '#333333',
       fontSize: 16
     })
-    const subHeaderText = new PIXI.Text('Experiment #612710', {
+    const idText = `Experiment #${this.game.id}`
+    const subHeaderText = new PIXI.Text(idText, {
       fontFamily: 'OpenSans',
       fill: '#666666',
       fontSize: 12
