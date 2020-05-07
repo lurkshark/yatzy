@@ -4,8 +4,8 @@ import {scientistSprites} from './assets'
 
 export default class Menu {
 
-  constructor(app, coordinator) {
-    this.app = app
+  constructor(coordinator) {
+    this.app = coordinator.app
     this.coordinator = coordinator
   }
 
@@ -16,8 +16,8 @@ export default class Menu {
         fill: '#333333',
         fontSize: 54
       })
-      headerText.x = 35
-      headerText.y = 25
+      headerText.x = 15
+      headerText.y = 5
       this.container.addChild(headerText)
       
       const newGameContainer = new PIXI.Container()
@@ -35,8 +35,8 @@ export default class Menu {
 
       startNewGameDescriptionText.y = 25
 
-      newGameContainer.x = 35
-      newGameContainer.y = 200
+      newGameContainer.x = 15
+      newGameContainer.y = 180
       newGameContainer.interactive = true
       newGameContainer.buttonMode = true
       newGameContainer.on('pointerup', () => this.onStartNewGame())
@@ -59,8 +59,8 @@ export default class Menu {
 
       reviewNotesDescriptionText.y = 25
 
-      viewHistoryContainer.x = 35
-      viewHistoryContainer.y = 270
+      viewHistoryContainer.x = 15
+      viewHistoryContainer.y = 250
       viewHistoryContainer.alpha = 0.35
       viewHistoryContainer.interactive = true
       viewHistoryContainer.buttonMode = true
@@ -72,8 +72,8 @@ export default class Menu {
       const scientistSprite = new PIXI.Sprite()
       scientistSprite.texture = resources.scientist.texture
       scientistSprite.anchor.set(1)
-      scientistSprite.x = this.coordinator.width - 20
-      scientistSprite.y = this.coordinator.height - 20
+      scientistSprite.x = this.coordinator.width
+      scientistSprite.y = this.coordinator.height
       scientistSprite.height = this.coordinator.height / 3
       scientistSprite.scale.x = scientistSprite.scale.y
       this.container.addChild(scientistSprite)
@@ -88,7 +88,7 @@ export default class Menu {
   }
 
   onStartNewGame() {
-    this.coordinator.gotoScene(new Gameplay(this.app, this.coordinator))
+    this.coordinator.gotoScene(new Gameplay(this.coordinator))
   }
 
   onUpdate(delta) {}
