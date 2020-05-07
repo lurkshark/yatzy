@@ -238,6 +238,6 @@ export default class Game {
   get total() {
     return this.upperSubtotal + this.lowerSubtotal
       + (this.upperSubtotal > 62 ? 35 : 0)
-      + (this.scorecard.bonus * 100 || 0)
+      + (this.bonuses * 100 || 0)
   }
 }
