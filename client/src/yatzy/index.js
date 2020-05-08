@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import localforage from 'localforage'
 import WebFont from 'webfontloader'
 import Menu from './menu'
 import './assets'
@@ -24,6 +25,11 @@ export default class Yatzy {
       this.update(delta)
     })
 
+    // Initialize instance of localforage
+    this.localforage = localforage.createInstance({
+      name: 'YatzyLaboratory-v1'
+    })
+
     WebFont.load({
       // Load the menu when fonts are ready
       active: () => this.gotoScene(new Menu(this)),
@@ -44,8 +50,8 @@ export default class Yatzy {
     container.x = 20
     container.y = 20
 
+    newScene.onStart(container)
     this.app.stage.addChild(container)
-    await newScene.onStart(container)
     this.currentScene = newScene
   }
 

@@ -26,7 +26,7 @@ export default class Gameplay {
       this.scorecardSprites = {}
       for (let category of Object.values(Game.Categories)) {
         const sprite = new PIXI.Sprite()
-        sprite.on('pointerup', () => {
+        sprite.on('pointerdown', () => {
           this.manager.selectCategory(category)
         })
         container.addChild(sprite)
@@ -43,7 +43,7 @@ export default class Gameplay {
       this.diceSprites = {}
       for (let die = 0; die < 5; die += 1) {
         const sprite = new PIXI.Sprite()
-        sprite.on('pointerup', () => {
+        sprite.on('pointerdown', () => {
           this.manager.toggleHold(die)
         })
         container.addChild(sprite)
@@ -328,6 +328,11 @@ export default class Gameplay {
 
   showOnlyRollButton() {
     this.updateRollButton(true, true, true)
+    this.updateScoreButton(false, false, false)
+  }
+
+  showOnlyInactiveRollButton() {
+    this.updateRollButton(true, false, true)
     this.updateScoreButton(false, false, false)
   }
 

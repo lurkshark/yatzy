@@ -21,19 +21,41 @@ export default class Game {
 
   static get Categories() {
     return {
-      ACES: 0, TWOS: 1, THREES: 2, FOURS: 3, FIVES: 4, SIXES: 5,
-      THREE_OF_A_KIND: 6, FOUR_OF_A_KIND: 7, FULL_HOUSE: 8,
-      SMALL_STRAIGHT: 9, LARGE_STRAIGHT: 10,
-      YATZY: 11, CHANCE: 12
+      ACES: 1, TWOS: 2, THREES: 3, FOURS: 4, FIVES: 5, SIXES: 6,
+      THREE_OF_A_KIND: 7, FOUR_OF_A_KIND: 8, FULL_HOUSE: 9,
+      SMALL_STRAIGHT: 10, LARGE_STRAIGHT: 11,
+      YATZY: 12, CHANCE: 13
     }
   }
 
-  static load(id) {
-    // TODO: Load from localforage
-  }
-
-  save() {
-    // TODO: Save to localforage
+  static Repository(localforage) {
+    return {
+      load: async (id) => {
+        const gameKey = `Game:${id}`
+        const gameData = await localforage.getItem(gameKey)
+        if (gameData === null) return null
+        return new Game(
+          gameData.seed,
+          gameData.turnRolls,
+          gameData.totalDiceRolls,
+          gameData.currentDice,
+          gameData.scorecard,
+          gameData.bonuses
+        )
+      },
+      save: async (game) => {
+        const gameKey = `Game:${game.id}`
+        await localforage.setItem(gameKey, {
+          seed: game.seed,
+          turnRolls: game.turnRolls,
+          totalDiceRolls: game.totalDiceRolls,
+          currentDice: game.currentDice,
+          scorecard: game.scorecard,
+          bonuses: game.bonuses
+        })
+        return game
+      }
+    }
   }
 
   canRoll(hold) {
