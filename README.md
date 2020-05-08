@@ -1,57 +1,34 @@
-# Yatzy Deathmatch
+# parcel-pixijs-quickstarter
+Example App using pixiJS and Typescript bundled with parcel 🚀🔥.
 
-## API
+### Highlights
+- ⚡️  Super fast start
+- 🔥  Hot module replacement.
+- 📝  Typescript.
+- 👮  Unit testing.
 
-```
-GET /me
-  An overview of your own stats.
-GET /games
-  List of your games played.
-POST /games
-  Start a new random game.
-GET /games/:seed
-  State of the given game; creates new state if unplayed.
-POST /games/:seed/roll
-POST /games/:seed/score
-GET /friends
-POST /friends
-GET /friends/:user
-  Trailing 30 day competition stats; wins/loses, average spread.
-POST /register (user, totp)
-  
-```
+### Quick start
+**Node version >= 10.6.0 (recommended 12.16.2) and NPM >= 6.1.0 (recommended 6.14.4)**
 
-## Data Model
+```bash
+# clone the repo.
+# --depth 1 removes all but one .git commit history (Optional).
+git clone --depth 1 https://github.com/llorenspujol/parcel-pixijs-quickstarter.git
 
-```
-user:<user>:name <username>
-user:<user>:seeds <totp seeds>
-user:<user>:recent <timestamp>
-user:<user>:email <email address>
-user:<user>:games <games sorted by timestamp set>
-user:<user>:games:<game>:seed <game seed>
-game:<user>:<game>:rolls <game total and turn rolls map>
-game:<user>:<game>:scorecard <game scorecard map>
-game:<user>:<game>:dice <game current dice map>
-analysis:<game>:scorecard <optimal gameplay scorecard map>
-friends:<user>:active <user sorted by timestamp set>
-friends:<user>:pending <user sorted by timestamp set>
-friends:<user>:blocked <user sorted by timestamp set>
-feed:<user> <json event list>
-```
+# go to the repo
+cd parcel-pixijs-quickstarter
 
-## CLI Commands
-
-``` bash
-# install dependencies
+# install the dependencies via npm
 npm install
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# test the production build locally
-npm run serve
+# start the server in dev mode with HMR
+npm run start
 ```
+go to [http://localhost:1234](http://localhost:1234) in your browser. Done.
+
+### npm scripts
+
+* `npm run start` - runs the compiler and a server at the same time in dev mode with HMR (Hot Module Replacement) 🔥.
+* `npm run build` - runs the compiler once and generates a production build.
+* `npm run build_serve` - it makes a build and serves it to port 8080.
+* `npm run test` - runs the unit tests (.spec.ts files).
