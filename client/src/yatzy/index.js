@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import localforage from 'localforage'
 import WebFont from 'webfontloader'
 import Menu from './menu'
 import './assets'
@@ -15,10 +16,8 @@ export default class Yatzy {
       resolution: window.devicePixelRatio || 1,
       autoDensity: true
     })
-    window.theApp = this.app
 
-    // Scene stack
-    this.backStack = []
+    // Add canvas to body
     body.appendChild(this.app.view)
 
     // Add the overall update
@@ -26,9 +25,14 @@ export default class Yatzy {
       this.update(delta)
     })
 
+    // Initialize instance of localforage
+    this.localforage = localforage.createInstance({
+      name: 'YatzyLaboratory-v1'
+    })
+
     WebFont.load({
-      // Load the menu with height adjusted
-      active: () => this.gotoScene(new Menu(this.app, this)),
+      // Load the menu when fonts are ready
+      active: () => this.gotoScene(new Menu(this)),
       custom: {
         families: ['Ubuntu', 'OpenSans']
       }
@@ -37,32 +41,30 @@ export default class Yatzy {
 
   // Destroy current scene and load new
   async gotoScene(newScene) {
-    if (this.backStack[0]) {
-      await this.backStack[0].onFinish()
+    if (this.currentScene !== undefined) {
+      await this.currentScene.onFinish()
       this.app.stage.removeChildren()
     }
 
     const container = new PIXI.Container()
-    this.app.stage.addChild(container)
-    await newScene.onStart(container)
-    this.backStack.unshift(newScene)
+    container.x = 20
+    container.y = 20
 
-    // Pop old dead scenes off the stack
-    if (this.backStack.length > 5) {
-      this.backStack.pop()
-    }
+    newScene.onStart(container)
+    this.app.stage.addChild(container)
+    this.currentScene = newScene
   }
 
   update(delta) {
-    if (!this.backStack[0]) return
-    this.backStack[0].onUpdate(delta)
+    if (this.currentScene === undefined) return
+    this.currentScene.onUpdate(delta)
   }
 
   get width() {
-    return this.app.screen.width
+    return this.app.screen.width - 40
   }
 
   get height() {
-    return this.app.screen.height
+    return this.app.screen.height - 40
   }
 }
