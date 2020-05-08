@@ -1,6 +1,9 @@
 {
-  "name": "yatzy-client",
+  "name": "yatzy",
   "version": "1.0.0",
+  "repository": "github:lurkshark/yatzy",
+  "license": "MIT",
+  "private": true,
   "scripts": {
     "test": "jest",
     "start": "npm run clean && parcel src/index.html --host 0.0.0.0 --port 5001",
