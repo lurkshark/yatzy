@@ -52,14 +52,14 @@ export default class Gameplay {
 
       // Bottom roll dice button
       this.rollButton = new PIXI.Sprite()
-      this.rollButton.on('pointerup', () => {
+      this.rollButton.on('pointerdown', () => {
         this.manager.roll()
       })
       container.addChild(this.rollButton)
 
       // Bottom score button
       this.scoreButton = new PIXI.Sprite()
-      this.scoreButton.on('pointerup', () => {
+      this.scoreButton.on('pointerdown', () => {
         this.manager.score()
       })
       container.addChild(this.scoreButton)
@@ -74,7 +74,6 @@ export default class Gameplay {
   }
 
   updateBackButton(gameId) {
-    //console.log(`updateBackButton(${gameId})`)
     this.backButton.interactive = true
     this.backButton.buttonMode = true
     
@@ -110,7 +109,6 @@ export default class Gameplay {
   }
 
   updateScorecardSprite(category, isSelected, points) {
-    //console.log(`updateScorecardSprite(${category}, ${isSelected}, ${points})`)
     this.scorecardSprites[category].interactive = true
     this.scorecardSprites[category].buttonMode = true
 
@@ -192,7 +190,6 @@ export default class Gameplay {
   }
 
   updateUpperTotalSprite(upperSubtotal) {
-    //console.log(`updateUpperTotalSprite(${upperSubtotal})`)
     const container = new PIXI.Container()
     const upperSubtotalText = new PIXI.Text(upperSubtotal, {
       fontFamily: 'OpenSans',
@@ -209,7 +206,6 @@ export default class Gameplay {
   }
 
   updateTotalSprite(upperSubtotal, yatzyBonusCount, total) {
-    //console.log(`updateTotalSprite(${upperSubtotal}, ${yatzyBonusCount}, ${total})`)
     const container = new PIXI.Container()
     const totalText = new PIXI.Text(total, {
       fontFamily: 'OpenSans',
@@ -233,7 +229,6 @@ export default class Gameplay {
   }
 
   updateDiceSprite(die, value, isActive, isHolding) {
-    //console.log(`updateDiceSprite(${die}, ${value}, ${isActive}, ${isHolding})`)
     this.diceSprites[die].interactive = true
     this.diceSprites[die].buttonMode = true
 
@@ -260,7 +255,6 @@ export default class Gameplay {
   }
 
   updateRollButton(isVisible, isActive, isFullWidth) {
-    //console.log(`updateRollButton(${isVisible}, ${isActive}, ${isFullWidth})`)
     this.rollButton.interactive = true
     this.rollButton.buttonMode = true
     this.rollButton.y = this.coordinator.height - 50
@@ -292,7 +286,6 @@ export default class Gameplay {
   }
 
   updateScoreButton(isVisible, isActive, isFullWidth) {
-    //console.log(`updateScoreButton(${isVisible}, ${isActive}, ${isFullWidth})`)
     this.scoreButton.interactive = true
     this.scoreButton.buttonMode = true
     this.scoreButton.x = isFullWidth

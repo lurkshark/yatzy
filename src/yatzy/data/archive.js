@@ -1,47 +1,54 @@
-const MAX_SIZE = 64
+import Game from './game'
 
 export default class Archive {
 
-  constructor(
-    currentGameIndex = 0,
-    gameIdLookup = {},
-  ) {
-    this.currentGameIndex = currentGameIndex
-    this.gameIdLookup = gameIdLookup
+  constructor(games = []) {
+    this.games = games
   }
 
   static Repository(localforage) {
     return {
       load: async () => {
-        const archiveKey = 'Archive:Main'
+        const archiveKey = 'Archive:Month'
         const archiveData = await localforage.getItem(archiveKey)
-        return archiveData === null
-          ? Archive.Repository(localforage).save(new Archive())
-          : new Archive(archiveData.currentGameIndex, archiveData.gameIdLookup)
+        if (archiveData === null) {
+          return Archive.Repository(localforage).save(new Archive())
+        }
+
+        const monthAgo = new Date(new Date().setDate(new Date().getDate() - 30))
+        const games = await Promise.all(
+          archiveData.gameIds.map(gameId => {
+            return Game.Repository(localforage).load(gameId)
+          })
+        )
+
+        const loadedGames =  games.filter(game => {
+          return game !== null && game.time > monthAgo
+        })
+        return new Archive(loadedGames)
       },
       save: async (archive) => {
-        const archiveKey = 'Archive:Main'
+        const archiveKey = 'Archive:Month'
         await localforage.setItem(archiveKey, {
-          currentGameIndex: archive.currentGameIndex,
-          gameIdLookup: archive.gameIdLookup
+          gameIds: archive.games.map(game => game.id)
         })
         return archive
       }
     }
   }
 
-  get currentGameId() {
-    return this.gameIdLookup[this.currentGameIndex]
+  recentGames(count) {
+    return [...this.games.slice(0, count + 1)]
   }
 
-  registerGameId(gameId) {
-    if (this.currentGameId === gameId) return this
-    const newCurrentGameIndex = (this.currentGameIndex + 1) % MAX_SIZE
-    const newGameIdLookup = {...this.gameIdLookup}
-    newGameIdLookup[newCurrentGameIndex] = gameId
-    return new Archive(
-      newCurrentGameIndex,
-      newGameIdLookup
-    )
+  get currentGame() {
+    return this.recentGames(1)[0] || null
+  }
+
+  registerGame(game) {
+    console.debug(`registerGame(Game(${game.id}))`)
+    if (this.currentGame === null) return new Archive([game])
+    if (this.currentGame.id === game.id) return this
+    return new Archive([game, ...this.games])
   }
 }

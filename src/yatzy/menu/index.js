@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import MenuManager from './manager'
 import Gameplay from '../gameplay'
+import History from '../history'
 import {scientistSprites} from './assets'
 
 export default class Menu {
@@ -28,6 +29,9 @@ export default class Menu {
       this.updateLoadChallengeButton()
 
       this.reviewHistoryButton = new PIXI.Sprite()
+      this.reviewHistoryButton.on('pointerup', () => {
+        this.coordinator.gotoScene(new History(this.coordinator))
+      })
       container.addChild(this.reviewHistoryButton)
       this.updateReviewHistoryButton()
 
@@ -99,7 +103,7 @@ export default class Menu {
 
   updateLoadChallengeButton() {
     const loadChallengeContainer = new PIXI.Container()
-    const loadChallengeText = new PIXI.Text('Reproduce their results', {
+    const loadChallengeText = new PIXI.Text('Reproduce an experiment', {
       fontFamily: 'Ubuntu',
       fill: '#333333',
       fontSize: 24

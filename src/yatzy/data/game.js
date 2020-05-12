@@ -10,13 +10,15 @@ export default class Game {
       totalDiceRolls = 0,
       currentDice = [1, 2, 3, 4, 5],
       scorecard = {},
-      bonuses = 0) {
+      bonuses = 0,
+      time = new Date()) {
     this.seed = seed
     this.turnRolls = turnRolls
     this.totalDiceRolls = totalDiceRolls
     this.currentDice = [...currentDice]
     this.scorecard = {...scorecard}
-    this.bonuses = 0
+    this.bonuses = bonuses
+    this.time = time
   }
 
   static get Categories() {
@@ -40,7 +42,8 @@ export default class Game {
           gameData.totalDiceRolls,
           gameData.currentDice,
           gameData.scorecard,
-          gameData.bonuses
+          gameData.bonuses,
+          gameData.time
         )
       },
       save: async (game) => {
@@ -51,7 +54,8 @@ export default class Game {
           totalDiceRolls: game.totalDiceRolls,
           currentDice: game.currentDice,
           scorecard: game.scorecard,
-          bonuses: game.bonuses
+          bonuses: game.bonuses,
+          time: game.time
         })
         return game
       }
@@ -260,6 +264,6 @@ export default class Game {
   get total() {
     return this.upperSubtotal + this.lowerSubtotal
       + (this.upperSubtotal > 62 ? 35 : 0)
-      + (this.bonuses * 100 || 0)
+      + (this.bonuses * 100)
   }
 }
