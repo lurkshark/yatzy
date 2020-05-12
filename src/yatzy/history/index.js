@@ -20,13 +20,10 @@ export default class History {
       container.addChild(this.backButton)
       this.updateBackButton()
 
-      // Top game stats panel
-      this.gameStatisticsSprite = new PIXI.Sprite()
-      container.addChild(this.gameStatisticsSprite)
-
       // History sprites
       this.gameHistorySprites = {}
-      for (let i = 0; i < 3; i += 1) {
+      const historyCount = Math.floor((this.coordinator.height - 80) / 105)
+      for (let i = 0; i < historyCount; i += 1) {
         const sprite = new PIXI.Sprite()
         sprite.on('pointerdown', () => {
           this.manager.shareRecentGame(i)
@@ -34,6 +31,11 @@ export default class History {
         container.addChild(sprite)
         this.gameHistorySprites[i] = sprite
       }
+
+      // Bottom sharing hint
+      this.hintSprite = new PIXI.Sprite()
+      container.addChild(this.hintSprite)
+      this.updateHintSprite()
 
       this.manager.start()
     }
@@ -71,13 +73,10 @@ export default class History {
     this.backButton.texture = texture
   }
 
-  updateGameStatisticsSprite(analysis) {
-  }
-
   updateGameHistorySprite(index, game) {
     this.gameHistorySprites[index].interactive = true
     this.gameHistorySprites[index].buttonMode = true
-    this.gameHistorySprites[index].y = 200 + 105 * index
+    this.gameHistorySprites[index].y = 40 + index * 105
 
     const backing = new PIXI.Graphics()
       .drawRect(0, 0, this.coordinator.width, 105)
@@ -128,7 +127,7 @@ export default class History {
       fill: '#666666',
       fontSize: 30
     })
-    upperBonusText.x = 82
+    upperBonusText.x = 85
     upperBonusText.y = 62
     if (game.upperSubtotal > 63) {
       backing.addChild(upperBonusText)
@@ -158,11 +157,22 @@ export default class History {
   }
 
   showRecentGames(games) {
-    console.debug(`showRecentGames(${games})`)
-    for (let i = 0; i < 3; i += 1) {
+    for (const i of Object.keys(this.gameHistorySprites)) {
       if (games[i] === undefined) break
       this.updateGameHistorySprite(i, games[i])
     }
+  }
+
+  updateHintSprite() {
+    const hintText = new PIXI.Text('Select an entry to create a shareable challenge', {
+      fontFamily: 'OpenSans',
+      fill: '#666666',
+      fontSize: 14
+    })
+    this.hintSprite.anchor.set(0, 1)
+    this.hintSprite.y = this.coordinator.height - 5
+    const texture = this.app.renderer.generateTexture(hintText)
+    this.hintSprite.texture = texture
   }
 
   onUpdate(delta) {}

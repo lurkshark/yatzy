@@ -217,12 +217,12 @@ export default class Game {
         break
     }
 
-    const newBonuses = this.bonuses += (
+    const newBonuses = (
       isYatzy
-      && this.scorecard.hasOwnProperty(Game.Categories.YATZY)
+      && this.hasScore(Game.Categories.YATZY)
       && this.scorecard[Game.Categories.YATZY] > 0
       && this.bonuses < 3
-    ) ? 1 : 0
+    ) ? this.bonuses + 1 : this.bonuses
 
     return new Game(
       this.seed,

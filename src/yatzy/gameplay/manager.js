@@ -84,7 +84,7 @@ export default class GameplayManager {
     }
   }
 
-  async saveGame() {
+  saveGame() {
     return Game.Repository(this.localforage).save(this.game)
   }
 }

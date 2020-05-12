@@ -46,7 +46,6 @@ export default class Archive {
   }
 
   registerGame(game) {
-    console.debug(`registerGame(Game(${game.id}))`)
     if (this.currentGame === null) return new Archive([game])
     if (this.currentGame.id === game.id) return this
     return new Archive([game, ...this.games])
