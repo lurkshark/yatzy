@@ -1,7 +1,7 @@
 import Archive from '../data/archive'
 import Game from '../data/game'
 
-export default class MenuManager {
+export default class HistoryManager {
 
   constructor(coordinator, view) {
     this.coordinator = coordinator
@@ -12,12 +12,14 @@ export default class MenuManager {
   async start() {
     // Load most recent game and set view state
     const archive = await Archive.Repository(this.localforage).load()
-    const currentGame = archive.currentGame
-    const isGameInProgress = currentGame !== null && !currentGame.done
-    if (isGameInProgress) {
-      this.view.showContinueExperimentButton()
-    } else {
-      this.view.showStartNewExperimentButton()
-    }
+    const games = archive.recentGames(7)
+
+    this.recentGames = games.filter(game => game.done).slice(0, 6)
+    this.view.showRecentGames(this.recentGames)
+  }
+
+  shareRecentGame(gameIndex) {
+    console.debug(`shareRecentGame(Game(${this.recentGames[gameIndex].id}))`)
   }
 }
+

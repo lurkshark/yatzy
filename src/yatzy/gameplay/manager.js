@@ -15,14 +15,12 @@ export default class GameplayManager {
 
     // Load most recent game and set view state
     const archive = await Archive.Repository(this.localforage).load()
-    const currentGame = archive.currentGameId === null
-      ? await Game.Repository(this.localforage).save(new Game())
-      : await Game.Repository(this.localforage).load(archive.currentGameId)
+    const currentGame = archive.currentGame
     this.game = currentGame === null || currentGame.done
       ? await Game.Repository(this.localforage).save(new Game())
       : currentGame
     // Make sure the game is registered with the archive
-    const updatedArchive = archive.registerGameId(this.game.id)
+    const updatedArchive = archive.registerGame(this.game)
     await Archive.Repository(this.localforage).save(updatedArchive)
 
     this.view.showBackButton(this.game.id)
@@ -86,7 +84,7 @@ export default class GameplayManager {
     }
   }
 
-  async saveGame() {
+  saveGame() {
     return Game.Repository(this.localforage).save(this.game)
   }
 }
