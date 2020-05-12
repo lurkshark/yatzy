@@ -148,7 +148,6 @@ export default class Menu {
 
     this.reviewHistoryButton.x = 15
     this.reviewHistoryButton.y = 285
-    this.reviewHistoryButton.alpha = 0.35
     this.reviewHistoryButton.interactive = true
     this.reviewHistoryButton.buttonMode = true
     const texture = this.app.renderer.generateTexture(reviewHistoryContainer)

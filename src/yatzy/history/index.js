@@ -22,8 +22,7 @@ export default class History {
 
       // History sprites
       this.gameHistorySprites = {}
-      const historyCount = Math.floor((this.coordinator.height - 80) / 105)
-      for (let i = 0; i < historyCount; i += 1) {
+      for (let i = 0; i < this.historyCount; i += 1) {
         const sprite = new PIXI.Sprite()
         sprite.on('pointerdown', () => {
           this.manager.shareRecentGame(i)
@@ -34,13 +33,18 @@ export default class History {
 
       // Bottom sharing hint
       this.hintSprite = new PIXI.Sprite()
-      container.addChild(this.hintSprite)
+      // TODO: Uncomment when sharing is implemented
+      //container.addChild(this.hintSprite)
       this.updateHintSprite()
 
       this.manager.start()
     }
     
     PIXI.Loader.shared.load(setup)
+  }
+
+  get historyCount() {
+    return Math.floor((this.coordinator.height - 80) / 105)
   }
 
   updateBackButton() {
@@ -76,7 +80,9 @@ export default class History {
   updateGameHistorySprite(index, game) {
     this.gameHistorySprites[index].interactive = true
     this.gameHistorySprites[index].buttonMode = true
-    this.gameHistorySprites[index].y = 40 + index * 105
+    this.gameHistorySprites[index].y = (
+      this.coordinator.height - (this.historyCount * 105) + index * 105 - 40
+    )
 
     const backing = new PIXI.Graphics()
       .drawRect(0, 0, this.coordinator.width, 105)
@@ -119,7 +125,7 @@ export default class History {
       fontSize: 58
     })
     upperSubtotalText.x = 18
-    upperSubtotalText.y = 36
+    upperSubtotalText.y = 38
     backing.addChild(upperSubtotalText)
 
     const upperBonusText = new PIXI.Text('+35', {
@@ -128,7 +134,7 @@ export default class History {
       fontSize: 30
     })
     upperBonusText.x = 85
-    upperBonusText.y = 62
+    upperBonusText.y = 64
     if (game.upperSubtotal > 63) {
       backing.addChild(upperBonusText)
     }
@@ -136,7 +142,7 @@ export default class History {
     const totalText = new PIXI.Text(game.total, {
       fontFamily: 'OpenSans',
       fill: '#333333',
-      fontSize: 82
+      fontSize: 84
     })
     totalText.anchor.set(1, 0)
     totalText.x = this.coordinator.width
@@ -152,12 +158,35 @@ export default class History {
     totalLabelText.y = 6
     backing.addChild(totalLabelText)
 
+    const bonusesLabelText = new PIXI.Text('Bonuses', {
+      fontFamily: 'Ubuntu',
+      fill: '#e1a0ab',
+      fontSize: 12
+    })
+    bonusesLabelText.angle = 270
+    bonusesLabelText.x = this.coordinator.width / 2 - 20
+    bonusesLabelText.y = 94
+    backing.addChild(bonusesLabelText)
+
+    for (let i = 0; i < 3; i += 1) {
+      const hasBonus = game.bonuses > i
+      const bonusX = this.coordinator.width / 2
+      const bonusY = 47 + (3 * 18) - (i + 1) * 18
+      const bonusGraphic = new PIXI.Graphics()
+        .beginFill(hasBonus ? 0xa4c3dd : 0xe8f0f3)
+        .lineStyle({width: 0.5, color: 0xa4c3dd})
+        .drawRoundedRect(bonusX, bonusY, 10, 10, 1)
+        .lineStyle(0)
+        .endFill()
+      backing.addChild(bonusGraphic)
+    }
+
     const texture = this.app.renderer.generateTexture(backing)
     this.gameHistorySprites[index].texture = texture
   }
 
   showRecentGames(games) {
-    for (const i of Object.keys(this.gameHistorySprites)) {
+    for (let i = 0; i < this.historyCount; i += 1) {
       if (games[i] === undefined) break
       this.updateGameHistorySprite(i, games[i])
     }
