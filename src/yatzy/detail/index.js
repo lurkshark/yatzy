@@ -29,7 +29,6 @@ export default class Detail {
       // Bottom history hint
       this.hintSprite = new PIXI.Sprite()
       container.addChild(this.hintSprite)
-      this.updateHintSprite()
 
       // Bottom share button
       this.shareButton = new PIXI.Sprite()
@@ -124,7 +123,7 @@ export default class Detail {
   }
 
   updateGameHistorySprite(game) {
-    this.gameHistorySprite.y = this.coordinator.height - 105 - 165
+    this.gameHistorySprite.y = this.codeSprite.y + this.codeSprite.height + 10
     const graphic = historyTextureHelper(this.coordinator.width, game)
     const texture = this.app.renderer.generateTexture(graphic)
     this.gameHistorySprite.texture = texture
@@ -144,9 +143,13 @@ export default class Detail {
       wordWrap: true,
       wordWrapWidth: this.coordinator.width
     })
-    this.hintSprite.y = 470
+    this.hintSprite.y = this.gameHistorySprite.y + this.gameHistorySprite.height + 10
     const texture = this.app.renderer.generateTexture(hintText)
     this.hintSprite.texture = texture
+  }
+
+  showHint() {
+    this.updateHintSprite()
   }
 
   updateShareButton(isActive) {

@@ -2,6 +2,19 @@ import QRCode from 'qrcode'
 import Archive from '../data/archive'
 import Game from '../data/game'
 
+function dataUrltoFile(dataUrl, filename) {
+  const split = dataUrl.split(',')
+  const mime = split[0].match(/:(.*?);/)[1]
+  const binary = atob(split[1])
+
+  const bytes = []
+  for (let i = 0; i < binary.length; i++) {
+    bytes.push(binary.charCodeAt(i))
+  }
+
+  return new File([new Uint8Array(bytes)], filename, {type: mime})
+}
+
 export default class DetailManager {
 
   constructor(coordinator, view, options) {
@@ -23,6 +36,7 @@ export default class DetailManager {
     this.view.showBackButton(this.game.id)
     this.view.showCodeImage(codeTexture)
     this.view.showGameHistory(this.game)
+    this.view.showHint()
     
     if (navigator.share !== undefined) {
       this.view.showShareButton()
@@ -57,9 +71,10 @@ export default class DetailManager {
       .drawRect(0, 0, app.screen.width, app.screen.height)
     app.stage.addChildAt(backing, 0)
 
-    const image = app.renderer.plugins.extract.image(app.stage)
-    if (navigator.canShare && navigator.canShare({files: [image]})) {
-      navigator.share({files: [image]})
+    const dataUrl = app.renderer.plugins.extract.base64(app.stage)
+    const file = dataUrlToFile(dataUrl, `yatzy-${this.game.id}.png`)
+    if (navigator.canShare && navigator.canShare({files: [file]})) {
+      navigator.share({files: [file]})
     }
   }
 }
