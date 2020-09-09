@@ -92,7 +92,7 @@ export default function scorecardTextureHelper(width, category, isSelected, scor
     fill: '#333333',
     fontSize: 14
   })
-  const description = new PIXI.Text(INFO[category].label, {
+  const description = new PIXI.Text(INFO[category].description, {
     fontFamily: 'OpenSans',
     fill: '#666666',
     fontSize: 10

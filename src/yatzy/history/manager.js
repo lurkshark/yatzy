@@ -1,5 +1,6 @@
 import Archive from '../data/archive'
 import Game from '../data/game'
+import Detail from '../detail'
 
 export default class HistoryManager {
 
@@ -19,7 +20,11 @@ export default class HistoryManager {
   }
 
   shareRecentGame(gameIndex) {
-    console.debug(`shareRecentGame(Game(${this.recentGames[gameIndex].id}))`)
+    this.coordinator.gotoScene(
+      new Detail(this.coordinator, {
+        gameId: this.recentGames[gameIndex].id
+      })
+    )
   }
 }
 
