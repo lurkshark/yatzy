@@ -135,7 +135,7 @@ export default class Detail {
 
   updateHintSprite() {
     const hint = 'Share your notes with a friend so they can'
-      + ' run the same experiment and then compare results.'
+      + ' run the same experiment and compare results.'
     const hintText = new PIXI.Text(hint, {
       fontFamily: 'OpenSans',
       fill: '#666666',
