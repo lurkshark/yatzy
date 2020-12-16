@@ -14,63 +14,66 @@ export default class Gameplay {
   }
 
   onStart(container) {
-    const setup = (loader, resources) => {
-      // Top header and back button
-      this.backButton = new PIXI.Sprite()
-      this.backButton.on('pointerup', () => {
-        this.coordinator.gotoScene(new Menu(this.coordinator))
-      })
-      container.addChild(this.backButton)
-      
-      // Scorecard sprites table
-      this.scorecardSprites = {}
-      for (let category of Object.values(Game.Categories)) {
-        const sprite = new PIXI.Sprite()
-        sprite.on('pointerdown', () => {
-          this.manager.selectCategory(category)
+    return new Promise((resolve) => {
+      const setup = async (loader, resources) => {
+        // Top header and back button
+        this.backButton = new PIXI.Sprite()
+        this.backButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new Menu(this.coordinator))
         })
-        container.addChild(sprite)
-        this.scorecardSprites[category] = sprite
+        container.addChild(this.backButton)
+
+        // Scorecard sprites table
+        this.scorecardSprites = {}
+        for (let category of Object.values(Game.Categories)) {
+          const sprite = new PIXI.Sprite()
+          sprite.on('pointerdown', () => {
+            this.manager.selectCategory(category)
+          })
+          container.addChild(sprite)
+          this.scorecardSprites[category] = sprite
+        }
+
+        // Total sprite
+        this.upperTotalSprite = new PIXI.Sprite()
+        container.addChild(this.upperTotalSprite)
+        this.totalSprite = new PIXI.Sprite()
+        container.addChild(this.totalSprite)
+
+        // Dice sprites
+        this.diceSprites = {}
+        for (let die = 0; die < 5; die += 1) {
+          const sprite = new PIXI.Sprite()
+          sprite.on('pointerdown', () => {
+            this.manager.toggleHold(die)
+          })
+          container.addChild(sprite)
+          this.diceSprites[die] = sprite
+        }
+
+        // Bottom roll dice button
+        this.rollButton = new PIXI.Sprite()
+        this.rollButton.on('pointerup', () => {
+          this.manager.roll()
+        })
+        container.addChild(this.rollButton)
+
+        // Bottom score button
+        this.scoreButton = new PIXI.Sprite()
+        this.scoreButton.on('pointerup', () => {
+          this.manager.score()
+        })
+        container.addChild(this.scoreButton)
+
+        // Let the manager know we're
+        // all setup and ready to go
+        await this.manager.start()
+        resolve()
       }
 
-      // Total sprite
-      this.upperTotalSprite = new PIXI.Sprite()
-      container.addChild(this.upperTotalSprite)
-      this.totalSprite = new PIXI.Sprite()
-      container.addChild(this.totalSprite)
-
-      // Dice sprites
-      this.diceSprites = {}
-      for (let die = 0; die < 5; die += 1) {
-        const sprite = new PIXI.Sprite()
-        sprite.on('pointerdown', () => {
-          this.manager.toggleHold(die)
-        })
-        container.addChild(sprite)
-        this.diceSprites[die] = sprite
-      }
-
-      // Bottom roll dice button
-      this.rollButton = new PIXI.Sprite()
-      this.rollButton.on('pointerdown', () => {
-        this.manager.roll()
-      })
-      container.addChild(this.rollButton)
-
-      // Bottom score button
-      this.scoreButton = new PIXI.Sprite()
-      this.scoreButton.on('pointerdown', () => {
-        this.manager.score()
-      })
-      container.addChild(this.scoreButton)
-
-      // Let the manager know we're
-      // all setup and ready to go
-      this.manager.start()
-    }
-
-    // Load any assets and setup
-    PIXI.Loader.shared.load(setup)
+      // Load any assets and setup
+      PIXI.Loader.shared.load(setup)
+    })
   }
 
   updateBackButton(gameId) {

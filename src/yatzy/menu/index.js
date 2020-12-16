@@ -13,40 +13,43 @@ export default class Menu {
   }
 
   onStart(container) {
-    const setup = (loader, resources) => {
-      this.headerSprite = new PIXI.Sprite()
-      container.addChild(this.headerSprite)
-      this.updateHeaderSprite()
+    return new Promise((resolve) => {
+      const setup = async (loader, resources) => {
+        this.headerSprite = new PIXI.Sprite()
+        container.addChild(this.headerSprite)
+        this.updateHeaderSprite()
 
-      this.startGameButton = new PIXI.Sprite()
-      this.startGameButton.on('pointerup', () => {
-        this.coordinator.gotoScene(new Gameplay(this.coordinator))
-      })
-      container.addChild(this.startGameButton)
+        this.startGameButton = new PIXI.Sprite()
+        this.startGameButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new Gameplay(this.coordinator))
+        })
+        container.addChild(this.startGameButton)
 
-      this.loadChallengeButton = new PIXI.Sprite()
-      container.addChild(this.loadChallengeButton)
-      this.updateLoadChallengeButton()
+        this.loadChallengeButton = new PIXI.Sprite()
+        container.addChild(this.loadChallengeButton)
+        this.updateLoadChallengeButton()
 
-      this.reviewHistoryButton = new PIXI.Sprite()
-      this.reviewHistoryButton.on('pointerup', () => {
-        this.coordinator.gotoScene(new History(this.coordinator))
-      })
-      container.addChild(this.reviewHistoryButton)
-      this.updateReviewHistoryButton()
+        this.reviewHistoryButton = new PIXI.Sprite()
+        this.reviewHistoryButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new History(this.coordinator))
+        })
+        container.addChild(this.reviewHistoryButton)
+        this.updateReviewHistoryButton()
 
-      this.scientistSprite = new PIXI.Sprite()
-      container.addChild(this.scientistSprite)
-      this.updateScientistSprite(resources.scientist.texture)
+        this.scientistSprite = new PIXI.Sprite()
+        container.addChild(this.scientistSprite)
+        this.updateScientistSprite(resources.scientist.texture)
 
-      this.manager.start()
-    }
-    
-    const randomScientistIndex = Math.floor(Math.random() * scientistSprites.length)
-    if (!PIXI.Loader.shared.resources.hasOwnProperty('scientist')) {
-      PIXI.Loader.shared.add('scientist', scientistSprites[randomScientistIndex])
-    }
-    PIXI.Loader.shared.load(setup)
+        await this.manager.start()
+        resolve()
+      }
+
+      const randomScientistIndex = Math.floor(Math.random() * scientistSprites.length)
+      if (!PIXI.Loader.shared.resources.hasOwnProperty('scientist')) {
+        PIXI.Loader.shared.add('scientist', scientistSprites[randomScientistIndex])
+      }
+      PIXI.Loader.shared.load(setup)
+    })
   }
 
   updateHeaderSprite() {

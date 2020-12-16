@@ -12,35 +12,38 @@ export default class History {
   }
 
   onStart(container) {
-    const setup = (loader, resources) => {
-      // Top header and back button
-      this.backButton = new PIXI.Sprite()
-      this.backButton.on('pointerup', () => {
-        this.coordinator.gotoScene(new Menu(this.coordinator))
-      })
-      container.addChild(this.backButton)
-      this.updateBackButton()
-
-      // History sprites
-      this.gameHistorySprites = {}
-      for (let i = 0; i < this.historyCount; i += 1) {
-        const sprite = new PIXI.Sprite()
-        sprite.on('pointerdown', () => {
-          this.manager.shareRecentGame(i)
+    return new Promise((resolve) => {
+      const setup = async (loader, resources) => {
+        // Top header and back button
+        this.backButton = new PIXI.Sprite()
+        this.backButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new Menu(this.coordinator))
         })
-        container.addChild(sprite)
-        this.gameHistorySprites[i] = sprite
+        container.addChild(this.backButton)
+        this.updateBackButton()
+
+        // History sprites
+        this.gameHistorySprites = {}
+        for (let i = 0; i < this.historyCount; i += 1) {
+          const sprite = new PIXI.Sprite()
+          sprite.on('pointerup', () => {
+            this.manager.shareRecentGame(i)
+          })
+          container.addChild(sprite)
+          this.gameHistorySprites[i] = sprite
+        }
+
+        // Bottom sharing hint
+        this.hintSprite = new PIXI.Sprite()
+        container.addChild(this.hintSprite)
+        this.updateHintSprite()
+
+        await this.manager.start()
+        resolve()
       }
 
-      // Bottom sharing hint
-      this.hintSprite = new PIXI.Sprite()
-      container.addChild(this.hintSprite)
-      this.updateHintSprite()
-
-      this.manager.start()
-    }
-    
-    PIXI.Loader.shared.load(setup)
+      PIXI.Loader.shared.load(setup)
+    })
   }
 
   get historyCount() {

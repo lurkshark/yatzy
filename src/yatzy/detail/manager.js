@@ -2,7 +2,7 @@ import QRCode from 'qrcode'
 import Archive from '../data/archive'
 import Game from '../data/game'
 
-function dataUrltoFile(dataUrl, filename) {
+function dataUrlToFile(dataUrl, filename) {
   const split = dataUrl.split(',')
   const mime = split[0].match(/:(.*?);/)[1]
   const binary = atob(split[1])
@@ -53,7 +53,7 @@ export default class DetailManager {
     // Even with a dataUrl, laoding the image
     // for a texture is done async. Wrapping it
     // in a promise makes this a bit cleaner
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       new PIXI.Loader()
         .add(value, dataUrl)
         .load((loader, resources) => {
@@ -74,7 +74,7 @@ export default class DetailManager {
     const dataUrl = app.renderer.plugins.extract.base64(app.stage)
     const file = dataUrlToFile(dataUrl, `yatzy-${this.game.id}.png`)
     if (navigator.canShare && navigator.canShare({files: [file]})) {
-      navigator.share({files: [file]})
+      navigator.share({title: 'Yatzy Laboratory Experiment', files: [file]})
     }
   }
 }
