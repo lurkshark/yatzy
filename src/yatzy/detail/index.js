@@ -12,36 +12,39 @@ export default class Detail {
   }
 
   onStart(container) {
-    const setup = (loader, resources) => {
-      // Top header and back button
-      this.backButton = new PIXI.Sprite()
-      this.backButton.on('pointerup', () => {
-        this.coordinator.gotoScene(new Menu(this.coordinator))
-      })
-      container.addChild(this.backButton)
+    return new Promise((resolve) => {
+      const setup = async (loader, resources) => {
+        // Top header and back button
+        this.backButton = new PIXI.Sprite()
+        this.backButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new Menu(this.coordinator))
+        })
+        container.addChild(this.backButton)
 
-      this.codeSprite = new PIXI.Sprite()
-      container.addChild(this.codeSprite)
+        this.codeSprite = new PIXI.Sprite()
+        container.addChild(this.codeSprite)
 
-      this.gameHistorySprite = new PIXI.Sprite()
-      container.addChild(this.gameHistorySprite)
+        this.gameHistorySprite = new PIXI.Sprite()
+        container.addChild(this.gameHistorySprite)
 
-      // Bottom history hint
-      this.hintSprite = new PIXI.Sprite()
-      container.addChild(this.hintSprite)
+        // Bottom history hint
+        this.hintSprite = new PIXI.Sprite()
+        container.addChild(this.hintSprite)
 
-      // Bottom share button
-      this.shareButton = new PIXI.Sprite()
-      this.shareButton.on('pointerdown', () => {
-        this.manager.share()
-      })
-      container.addChild(this.shareButton)
+        // Bottom share button
+        this.shareButton = new PIXI.Sprite()
+        this.shareButton.on('pointerup', () => {
+          this.manager.share()
+        })
+        container.addChild(this.shareButton)
 
-      this.manager.start()
-    }
+        await this.manager.start()
+        resolve()
+      }
 
-    // Load any assets and setup
-    PIXI.Loader.shared.load(setup)
+      // Load any assets and setup
+      PIXI.Loader.shared.load(setup)
+    })
   }
 
   updateBackButton(gameId) {

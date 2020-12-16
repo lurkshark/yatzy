@@ -43,6 +43,22 @@ export default class Yatzy {
   async gotoScene(newScene) {
     if (this.currentScene !== undefined) {
       await this.currentScene.onFinish()
+      // This is a hacky inline fadeout
+      await new Promise((resolve) => {
+        let start
+        const fadeOut = (timestamp) => {
+          if (start === undefined) start = timestamp
+          const elapsed = timestamp - start
+          const alpha = Math.max(0, 1 - elapsed / 100)
+          this.app.stage.alpha = alpha
+          if (elapsed < 100) {
+            requestAnimationFrame(fadeOut)
+          } else {
+            resolve()
+          }
+        }
+        requestAnimationFrame(fadeOut)
+      })
       this.app.stage.removeChildren()
     }
 
@@ -50,9 +66,25 @@ export default class Yatzy {
     container.x = 20
     container.y = 20
 
-    newScene.onStart(container)
+    await newScene.onStart(container)
     this.app.stage.addChild(container)
     this.currentScene = newScene
+    // This is a hacky inline fadein
+    await new Promise((resolve) => {
+      let start
+      const fadeIn = (timestamp) => {
+        if (start === undefined) start = timestamp
+        const elapsed = timestamp - start
+        const alpha = Math.min(1, elapsed / 100)
+        this.app.stage.alpha = alpha
+        if (elapsed < 100) {
+          requestAnimationFrame(fadeIn)
+        } else {
+          resolve()
+        }
+      }
+      requestAnimationFrame(fadeIn)
+    })
   }
 
   update(delta) {

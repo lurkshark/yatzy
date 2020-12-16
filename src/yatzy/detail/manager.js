@@ -53,7 +53,7 @@ export default class DetailManager {
     // Even with a dataUrl, laoding the image
     // for a texture is done async. Wrapping it
     // in a promise makes this a bit cleaner
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       new PIXI.Loader()
         .add(value, dataUrl)
         .load((loader, resources) => {
@@ -73,8 +73,7 @@ export default class DetailManager {
 
     const dataUrl = app.renderer.plugins.extract.base64(app.stage)
     const file = dataUrlToFile(dataUrl, `yatzy-${this.game.id}.png`)
-    //if (navigator.canShare && navigator.canShare({files: [file]})) {
-    if (true) {
+    if (navigator.canShare && navigator.canShare({files: [file]})) {
       navigator.share({title: 'Yatzy Laboratory Experiment', files: [file]})
     }
   }
