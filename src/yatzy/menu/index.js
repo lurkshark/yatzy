@@ -1,6 +1,7 @@
 import * as PIXI from 'pixi.js'
 import MenuManager from './manager'
 import Gameplay from '../gameplay'
+import Loader from '../loader'
 import History from '../history'
 import {scientistSprites} from './assets'
 
@@ -26,6 +27,9 @@ export default class Menu {
         container.addChild(this.startGameButton)
 
         this.loadChallengeButton = new PIXI.Sprite()
+        this.loadChallengeButton.on('pointerup', () => {
+          this.coordinator.gotoScene(new Loader(this.coordinator))
+        })
         container.addChild(this.loadChallengeButton)
         this.updateLoadChallengeButton()
 
@@ -45,7 +49,7 @@ export default class Menu {
       }
 
       const randomScientistIndex = Math.floor(Math.random() * scientistSprites.length)
-      if (!PIXI.Loader.shared.resources.hasOwnProperty('scientist')) {
+      if (!PIXI.Loader.shared.resources['scientist']) {
         PIXI.Loader.shared.add('scientist', scientistSprites[randomScientistIndex])
       }
       PIXI.Loader.shared.load(setup)

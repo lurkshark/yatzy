@@ -54,11 +54,15 @@ export default class DetailManager {
     // for a texture is done async. Wrapping it
     // in a promise makes this a bit cleaner
     return new Promise((resolve) => {
-      new PIXI.Loader()
-        .add(value, dataUrl)
-        .load((loader, resources) => {
-          resolve(resources[value].texture)
-        })
+      if (PIXI.Loader.shared.resources[value]) {
+        resolve(PIXI.Loader.shared.resources[value].texture)
+      } else {
+        PIXI.Loader.shared
+          .add(value, dataUrl)
+          .load((loader, resources) => {
+            resolve(resources[value].texture)
+          })
+      }
     })
   }
 
@@ -78,4 +82,3 @@ export default class DetailManager {
     }
   }
 }
-
