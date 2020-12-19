@@ -12,28 +12,31 @@ export default class LoaderManager {
   }
 
   async start() {
-    this.view.updateBackButton()
+    this.view.updateBackButton('Peer Review')
     this.view.updateFileInputEl()
+    this.view.updateFileOutlineSprite()
   }
 
   async loadCodeFromImageFile(file) {
     const image = await new Promise((resolve) => {
       const reader = new FileReader()
       reader.addEventListener('load', () => {
-        const resourceKey = `loaded-${new Date().getTime()}`
-        PIXI.Loader.shared
-          .add(resourceKey, reader.result)
-          .load((loader, resources) => {
-            const resolution = this.coordinator.app.renderer.resolution
-            const loadedImage = new PIXI.Sprite(resources[resourceKey].texture)
-            const canvasExtract = this.coordinator.app.renderer.plugins.extract
-            const pixels = canvasExtract.pixels(loadedImage)
-            resolve({
-              data: pixels,
-              width: loadedImage.width * resolution,
-              height: loadedImage.height * resolution
-            })
+        const image = document.createElement('img')
+        image.addEventListener('load', () => {
+          const canvas = document.createElement('canvas')
+          if (image.width > 360) {
+            canvas.width = 360
+            canvas.height = 640
+          }
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(image, 0, 0, 360, 640)
+          resolve({
+            data: ctx.getImageData(0, 0, 360, 640).data,
+            width: 360,
+            height: 640
           })
+        })
+        image.src = reader.result
       })
       reader.readAsDataURL(file)
     })

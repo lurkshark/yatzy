@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import DetailManager from './manager'
-import historyTextureHelper from '../history/historyTextureHelper'
+import detailTextureHelper from './detailTextureHelper'
 import Menu from '../menu'
 
 export default class Detail {
@@ -127,7 +127,7 @@ export default class Detail {
 
   updateGameHistorySprite(game) {
     this.gameHistorySprite.y = this.codeSprite.y + this.codeSprite.height + 10
-    const graphic = historyTextureHelper(this.coordinator.width, game)
+    const graphic = detailTextureHelper(this.coordinator.width, game)
     const texture = this.app.renderer.generateTexture(graphic)
     this.gameHistorySprite.texture = texture
   }

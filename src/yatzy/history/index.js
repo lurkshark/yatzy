@@ -47,7 +47,7 @@ export default class History {
   }
 
   get historyCount() {
-    return Math.floor((this.coordinator.height - 80) / 105)
+    return Math.floor((this.coordinator.height - 80) / 55)
   }
 
   updateBackButton() {
@@ -84,7 +84,7 @@ export default class History {
     this.gameHistorySprites[index].interactive = true
     this.gameHistorySprites[index].buttonMode = true
     this.gameHistorySprites[index].y = (
-      this.coordinator.height - (this.historyCount * 105) + index * 105 - 40
+      this.coordinator.height - (this.historyCount * 55) + index * 55 - 40
     )
 
     const graphic = historyTextureHelper(this.coordinator.width, game)
@@ -115,4 +115,3 @@ export default class History {
 
   onFinish() {}
 }
-

@@ -37,12 +37,12 @@ export default class GameplayManager {
     this.updateDiceAndButtonsView()
   }
 
-  async score() {
+  score() {
     if (!this.game.canScore(this.selectedCategory)) return
     this.game = this.game.score(this.selectedCategory)
     this.selectedCategory = null
     this.holding = [false, false, false, false, false]
-    await this.saveGame()
+    this.saveGame() // async
     // Update view elements
     this.view.showScorecard(this.game.scorecard)
     this.view.showTotal(this.game.upperSubtotal, this.game.bonuses, this.game.total)
@@ -55,11 +55,11 @@ export default class GameplayManager {
     this.updateDiceAndButtonsView()
   }
 
-  async roll() {
+  roll() {
     if (!this.game.canRoll(this.holding)) return
     this.game = this.game.roll(this.holding)
     this.selectedCategory = null
-    await this.saveGame()
+    this.saveGame() // async
     // Update view elements
     this.view.showScorecard(this.game.scorecard)
     this.updateDiceAndButtonsView()

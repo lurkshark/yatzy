@@ -27,6 +27,9 @@ export default class Loader {
           this.manager.loadCodeFromImageFile(file)
         })
 
+        this.fileOutlineSprite = new PIXI.Sprite()
+        container.addChild(this.fileOutlineSprite)
+
         await this.manager.start()
         resolve()
       }
@@ -36,7 +39,7 @@ export default class Loader {
     })
   }
 
-  updateBackButton() {
+  updateBackButton(subtitle) {
     this.backButton.interactive = true
     this.backButton.buttonMode = true
     
@@ -52,7 +55,7 @@ export default class Loader {
       fill: '#333333',
       fontSize: 16
     })
-    const subHeaderText = new PIXI.Text('Peer Review', {
+    const subHeaderText = new PIXI.Text(subtitle, {
       fontFamily: 'OpenSans',
       fill: '#666666',
       fontSize: 12
@@ -74,6 +77,18 @@ export default class Loader {
     this.fileInputEl.style.height = this.fileInputEl.style.width
     this.fileInputEl.style.left = '20px'
     this.fileInputEl.style.top = '60px'
+    this.fileInputEl.style.opacity = 0
+    // this.fileInputEl.style.border = 'thin black solid'
+  }
+
+  updateFileOutlineSprite() {
+    this.fileOutlineSprite.y = 40
+    const size = this.coordinator.width - 5
+    const outline = new PIXI.Graphics()
+      .lineStyle({width: 5, color: 0x000000, alpha: 0.3})
+      .drawRoundedRect(0, 0, size, size, 10)
+    const texture = this.app.renderer.generateTexture(outline)
+    this.fileOutlineSprite.texture = texture
   }
 
   onUpdate(delta) {}
