@@ -2,12 +2,13 @@ import * as PIXI from 'pixi.js'
 
 export default function detailTextureHelper(width, game) {
   const backing = new PIXI.Graphics()
-    .drawRect(0, 0, width, 105)
+  /*
   const underline = new PIXI.Graphics()
     .lineStyle({width: 0.5, color: 0xe1a0ab})
     .moveTo(0, 103).lineTo(width, 103)
     .lineStyle(0)
   backing.addChild(underline)
+  */
 
   const idText = `Experiment #${game.id}`
   const headerText = new PIXI.Text(idText, {

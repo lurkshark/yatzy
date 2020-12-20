@@ -128,7 +128,6 @@ export default class Menu {
 
     this.loadChallengeButton.x = 15
     this.loadChallengeButton.y = 220
-    this.loadChallengeButton.alpha = 0.35
     this.loadChallengeButton.interactive = true
     this.loadChallengeButton.buttonMode = true
     const texture = this.app.renderer.generateTexture(loadChallengeContainer)

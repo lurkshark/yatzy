@@ -20,6 +20,7 @@ export default class Loader {
         })
         container.addChild(this.backButton)
 
+        // Transparent file input element
         this.fileInputEl = document.createElement('input')
         document.body.appendChild(this.fileInputEl)
         this.fileInputEl.addEventListener('change', (e) => {
@@ -27,8 +28,13 @@ export default class Loader {
           this.manager.loadCodeFromImageFile(file)
         })
 
+        // Visual indicator for file input
         this.fileOutlineSprite = new PIXI.Sprite()
         container.addChild(this.fileOutlineSprite)
+
+        // Bottom history hint
+        this.hintSprite = new PIXI.Sprite()
+        container.addChild(this.hintSprite)
 
         await this.manager.start()
         resolve()
@@ -74,7 +80,7 @@ export default class Loader {
     this.fileInputEl.setAttribute('accept', 'image/*')
     this.fileInputEl.style.position = 'absolute'
     this.fileInputEl.style.width = `${this.coordinator.width}px`
-    this.fileInputEl.style.height = this.fileInputEl.style.width
+    this.fileInputEl.style.height = `${this.coordinator.height - 105}px`
     this.fileInputEl.style.left = '20px'
     this.fileInputEl.style.top = '60px'
     this.fileInputEl.style.opacity = 0
@@ -83,12 +89,35 @@ export default class Loader {
 
   updateFileOutlineSprite() {
     this.fileOutlineSprite.y = 40
-    const size = this.coordinator.width - 5
+    const width = this.coordinator.width - 5
+    const height = this.coordinator.height - 110
     const outline = new PIXI.Graphics()
       .lineStyle({width: 5, color: 0x000000, alpha: 0.3})
-      .drawRoundedRect(0, 0, size, size, 10)
+      .drawRoundedRect(0, 0, width, height, 10)
+      .moveTo(width / 2 - 15, height / 2).lineTo(width / 2 + 15, height / 2)
+      .moveTo(width / 2, height / 2 - 15).lineTo(width / 2, height / 2 + 15)
     const texture = this.app.renderer.generateTexture(outline)
     this.fileOutlineSprite.texture = texture
+  }
+
+  updateHintSprite() {
+    const hint = 'Select a screenshot or image with a'
+      + ' challenge code in it to run the same experiment.'
+    const hintText = new PIXI.Text(hint, {
+      fontFamily: 'OpenSans',
+      fill: '#666666',
+      fontSize: 14,
+      wordWrap: true,
+      wordWrapWidth: this.coordinator.width
+    })
+    this.hintSprite.anchor.set(0, 1)
+    this.hintSprite.y = this.coordinator.height - 5
+    const texture = this.app.renderer.generateTexture(hintText)
+    this.hintSprite.texture = texture
+  }
+
+  showHint() {
+    this.updateHintSprite()
   }
 
   onUpdate(delta) {}

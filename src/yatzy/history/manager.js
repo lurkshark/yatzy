@@ -1,6 +1,7 @@
 import Archive from '../data/archive'
 import Game from '../data/game'
 import Detail from '../detail'
+import Gameplay from '../gameplay'
 
 export default class HistoryManager {
 
@@ -18,12 +19,20 @@ export default class HistoryManager {
     this.view.showRecentGames(this.recentGames)
   }
 
-  shareRecentGame(gameIndex) {
-    this.coordinator.gotoScene(
-      new Detail(this.coordinator, {
-        gameId: this.recentGames[gameIndex].id
-      })
-    )
+  gotoRecentGame(gameIndex) {
+    if (this.recentGames[gameIndex].done) {
+      this.coordinator.gotoScene(
+        new Detail(this.coordinator, {
+          gameId: this.recentGames[gameIndex].id
+        })
+      )
+    } else {
+      this.coordinator.gotoScene(
+        new Gameplay(this.coordinator, {
+          gameId: this.recentGames[gameIndex].id
+        })
+      )
+    }
   }
 }
 

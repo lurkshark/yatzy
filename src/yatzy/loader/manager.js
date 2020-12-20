@@ -1,7 +1,7 @@
 import jsQR from 'jsqr'
-import Archive from '../data/archive'
 import Game from '../data/game'
 import Gameplay from '../gameplay'
+import Detail from '../detail'
 
 export default class LoaderManager {
 
@@ -9,13 +9,13 @@ export default class LoaderManager {
     this.coordinator = coordinator
     this.localforage = coordinator.localforage
     this.view = view
-    this.options = {...options}
   }
 
   async start() {
     this.view.updateBackButton('Peer Review')
     this.view.updateFileInputEl()
     this.view.updateFileOutlineSprite()
+    this.view.showHint()
   }
 
   async loadCodeFromImageFile(file) {
@@ -44,10 +44,16 @@ export default class LoaderManager {
 
     const code = jsQR(image.data, image.width, image.height)
     if (code && code.data) {
-      const scannedGame = new Game(code.data)
-      const existingGame = await Game.Repository(this.localforage).load(scannedGame.id)
-      if (existingGame === null) await Game.Repository(this.localforage).save(scannedGame)
-      this.coordinator.gotoScene(new Gameplay(this.coordinator, {gameId: scannedGame.id}))
+      const scannedGameId = new Game(code.data).id
+      const existingGame = await Game.Repository(this.localforage).load(scannedGameId)
+      if (existingGame === null) {
+        await Game.Repository(this.localforage).save(new Game(code.data))
+        this.coordinator.gotoScene(new Gameplay(this.coordinator, {gameId: scannedGameId}))
+      } else if (!existingGame.done) {
+        this.coordinator.gotoScene(new Gameplay(this.coordinator, {gameId: scannedGameId}))
+      } else {
+        this.coordinator.gotoScene(new Detail(this.coordinator, {gameId: scannedGameId}))
+      }
     }
   }
 }

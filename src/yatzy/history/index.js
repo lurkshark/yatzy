@@ -27,7 +27,7 @@ export default class History {
         for (let i = 0; i < this.historyCount; i += 1) {
           const sprite = new PIXI.Sprite()
           sprite.on('pointerup', () => {
-            this.manager.shareRecentGame(i)
+            this.manager.gotoRecentGame(i)
           })
           container.addChild(sprite)
           this.gameHistorySprites[i] = sprite

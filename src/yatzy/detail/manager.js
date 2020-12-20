@@ -1,18 +1,12 @@
 import QRCode from 'qrcode'
 import Archive from '../data/archive'
 import Game from '../data/game'
+import Gameplay from '../gameplay'
 
-function dataUrlToFile(dataUrl, filename) {
-  const split = dataUrl.split(',')
-  const mime = split[0].match(/:(.*?);/)[1]
-  const binary = atob(split[1])
-
-  const bytes = []
-  for (let i = 0; i < binary.length; i++) {
-    bytes.push(binary.charCodeAt(i))
-  }
-
-  return new File([new Uint8Array(bytes)], filename, {type: mime})
+async function dataUrlToFile(dataUrl, filename) {
+  const fileResponse = await fetch(dataUrl)
+  const fileBlob = fileResponse.blob()
+  return new File([fileBlob], filename, {type: fileBlob.type})
 }
 
 export default class DetailManager {
@@ -35,12 +29,10 @@ export default class DetailManager {
 
     this.view.showBackButton(this.game.id)
     this.view.showCodeImage(codeTexture)
-    this.view.showGameHistory(this.game)
+    this.view.showGameDetail(this.game)
+    // this.view.updateShareButton(navigator.share !== undefined)
+    // this.view.updatePlayButton(!this.game.done)
     this.view.showHint()
-    
-    if (navigator.share !== undefined) {
-      this.view.showShareButton()
-    }
   }
 
   async generateCodeImage(value) {
@@ -66,7 +58,7 @@ export default class DetailManager {
     })
   }
 
-  share() {
+  async share() {
     if (navigator.share === undefined) return
 
     const app = this.coordinator.app
@@ -76,9 +68,13 @@ export default class DetailManager {
     app.stage.addChildAt(backing, 0)
 
     const dataUrl = app.renderer.plugins.extract.base64(app.stage)
-    const file = dataUrlToFile(dataUrl, `yatzy-${this.game.id}.png`)
+    const file = await dataUrlToFile(dataUrl, `yatzy-${this.game.id}.png`)
     if (navigator.canShare && navigator.canShare({files: [file]})) {
       navigator.share({title: 'Yatzy Laboratory Experiment', files: [file]})
     }
+  }
+
+  play() {
+    this.coordinator.gotoScene(new Gameplay(this.coordinator, {gameId: this.game.id}))
   }
 }
