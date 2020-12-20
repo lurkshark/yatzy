@@ -1,0 +1,3 @@
+#!/usr/bin/env sh
+rm /mnt/c/Users/joel/Workspace/yatzy/dist/*
+cp dist/* /mnt/c/Users/joel/Workspace/yatzy/dist/

@@ -1,6 +1,6 @@
 import * as PIXI from 'pixi.js'
 import DetailManager from './manager'
-import historyTextureHelper from '../history/historyTextureHelper'
+import detailTextureHelper from './detailTextureHelper'
 import Menu from '../menu'
 
 export default class Detail {
@@ -24,12 +24,8 @@ export default class Detail {
         this.codeSprite = new PIXI.Sprite()
         container.addChild(this.codeSprite)
 
-        this.gameHistorySprite = new PIXI.Sprite()
-        container.addChild(this.gameHistorySprite)
-
-        // Bottom history hint
-        this.hintSprite = new PIXI.Sprite()
-        container.addChild(this.hintSprite)
+        this.gameDetailSprite = new PIXI.Sprite()
+        container.addChild(this.gameDetailSprite)
 
         // Bottom share button
         this.shareButton = new PIXI.Sprite()
@@ -37,6 +33,17 @@ export default class Detail {
           this.manager.share()
         })
         container.addChild(this.shareButton)
+
+        // Bottom play button
+        this.playButton = new PIXI.Sprite()
+        this.playButton.on('pointerup', () => {
+          this.manager.play()
+        })
+        container.addChild(this.playButton)
+
+        // Bottom history hint
+        this.hintSprite = new PIXI.Sprite()
+        container.addChild(this.hintSprite)
 
         await this.manager.start()
         resolve()
@@ -125,40 +132,23 @@ export default class Detail {
     this.updateCodeSprite(codeTexture)
   }
 
-  updateGameHistorySprite(game) {
-    this.gameHistorySprite.y = this.codeSprite.y + this.codeSprite.height + 10
-    const graphic = historyTextureHelper(this.coordinator.width, game)
+  updateGameDetailSprite(game) {
+    this.gameDetailSprite.y = this.codeSprite.y + this.codeSprite.height + 10
+    if (Object.keys(game.scorecard).length < 1) return
+
+    const graphic = detailTextureHelper(this.coordinator.width, game)
     const texture = this.app.renderer.generateTexture(graphic)
-    this.gameHistorySprite.texture = texture
+    this.gameDetailSprite.texture = texture
   }
 
-  showGameHistory(game) {
-    this.updateGameHistorySprite(game)
-  }
-
-  updateHintSprite() {
-    const hint = 'Share your notes with a friend so they can'
-      + ' run the same experiment and compare results.'
-    const hintText = new PIXI.Text(hint, {
-      fontFamily: 'OpenSans',
-      fill: '#666666',
-      fontSize: 14,
-      wordWrap: true,
-      wordWrapWidth: this.coordinator.width
-    })
-    this.hintSprite.y = this.gameHistorySprite.y + this.gameHistorySprite.height + 10
-    const texture = this.app.renderer.generateTexture(hintText)
-    this.hintSprite.texture = texture
-  }
-
-  showHint() {
-    this.updateHintSprite()
+  showGameDetail(game) {
+    this.updateGameDetailSprite(game)
   }
 
   updateShareButton(isActive) {
-    this.shareButton.interactive = true
-    this.shareButton.buttonMode = true
-    this.shareButton.y = this.coordinator.height - 50
+    this.shareButton.interactive = isActive
+    this.shareButton.buttonMode = isActive
+    this.shareButton.y = this.gameDetailSprite.y + this.gameDetailSprite.height
     const buttonWidth = this.coordinator.width
     const button = new PIXI.Graphics()
       .beginFill(0xb25d96, isActive ? 1 : 0.35)
@@ -180,8 +170,50 @@ export default class Detail {
     this.shareButton.texture = texture
   }
 
-  showShareButton() {
-    this.updateShareButton(true)
+  updatePlayButton(isActive) {
+    this.playButton.interactive = isActive
+    this.playButton.buttonMode = isActive
+    // this.playButton.y = this.shareButton.y + this.shareButton.height + 10
+    this.playButton.y = this.gameDetailSprite.y + this.gameDetailSprite.height
+    const buttonWidth = this.coordinator.width
+    const button = new PIXI.Graphics()
+      .beginFill(0x4268a2, isActive ? 1 : 0.35)
+      .drawRoundedRect(0, 0, buttonWidth, 50, 4)
+      .endFill()
+    // Button text
+    const buttonText = new PIXI.Text('Play', {
+      fontFamily: 'OpenSans',
+      fill: '#ffffff',
+      fontSize: 18
+    })
+    buttonText.anchor.set(0.5)
+    buttonText.x = buttonWidth / 2
+    buttonText.y = 25
+
+    // Add text to button
+    button.addChild(buttonText)
+    const texture = this.app.renderer.generateTexture(button)
+    this.playButton.texture = texture
+  }
+
+  updateHintSprite() {
+    const hint = 'Share your notes with a friend so they can'
+      + ' run the same experiment and compare results.'
+    const hintText = new PIXI.Text(hint, {
+      fontFamily: 'OpenSans',
+      fill: '#666666',
+      fontSize: 14,
+      wordWrap: true,
+      wordWrapWidth: this.coordinator.width
+    })
+    this.hintSprite.anchor.set(0, 1)
+    this.hintSprite.y = this.coordinator.height - 5
+    const texture = this.app.renderer.generateTexture(hintText)
+    this.hintSprite.texture = texture
+  }
+
+  showHint() {
+    this.updateHintSprite()
   }
 
   onUpdate(delta) {}

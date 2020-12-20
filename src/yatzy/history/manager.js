@@ -1,6 +1,7 @@
 import Archive from '../data/archive'
 import Game from '../data/game'
 import Detail from '../detail'
+import Gameplay from '../gameplay'
 
 export default class HistoryManager {
 
@@ -13,18 +14,25 @@ export default class HistoryManager {
   async start() {
     // Load most recent game and set view state
     const archive = await Archive.Repository(this.localforage).load()
-    const games = archive.recentGames(7)
 
-    this.recentGames = games.filter(game => game.done).slice(0, 6)
+    this.recentGames = archive.recentGames(12)
     this.view.showRecentGames(this.recentGames)
   }
 
-  shareRecentGame(gameIndex) {
-    this.coordinator.gotoScene(
-      new Detail(this.coordinator, {
-        gameId: this.recentGames[gameIndex].id
-      })
-    )
+  gotoRecentGame(gameIndex) {
+    if (this.recentGames[gameIndex].done) {
+      this.coordinator.gotoScene(
+        new Detail(this.coordinator, {
+          gameId: this.recentGames[gameIndex].id
+        })
+      )
+    } else {
+      this.coordinator.gotoScene(
+        new Gameplay(this.coordinator, {
+          gameId: this.recentGames[gameIndex].id
+        })
+      )
+    }
   }
 }
 

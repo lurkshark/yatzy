@@ -3,22 +3,30 @@ import Game from '../data/game'
 
 export default class GameplayManager {
 
-  constructor(coordinator, view) {
+  constructor(coordinator, view, options) {
     this.coordinator = coordinator
     this.localforage = coordinator.localforage
     this.view = view
+    this.options = {gameId: null, ...options}
   }
 
   async start() {
     this.selectedCategory = null
     this.holding = [false, false, false, false, false]
 
-    // Load most recent game and set view state
     const archive = await Archive.Repository(this.localforage).load()
-    const currentGame = archive.currentGame
-    this.game = currentGame === null || currentGame.done
-      ? await Game.Repository(this.localforage).save(new Game())
-      : currentGame
+    if (this.options.gameId === null) {
+      // Load most recent game or register a new one
+      const currentGame = archive.currentGame
+      this.game = currentGame === null || currentGame.done
+        ? await Game.Repository(this.localforage).save(new Game())
+        : currentGame
+    } else {
+      // Load the given game and display the state
+      this.game = await Game.Repository(this.localforage).load(this.options.gameId)
+      if (this.game == null) throw new Error(`No game with gameId: ${this.options.gameId}`)
+    }
+
     // Make sure the game is registered with the archive
     const updatedArchive = archive.registerGame(this.game)
     await Archive.Repository(this.localforage).save(updatedArchive)
@@ -37,12 +45,12 @@ export default class GameplayManager {
     this.updateDiceAndButtonsView()
   }
 
-  async score() {
+  score() {
     if (!this.game.canScore(this.selectedCategory)) return
     this.game = this.game.score(this.selectedCategory)
     this.selectedCategory = null
     this.holding = [false, false, false, false, false]
-    await this.saveGame()
+    this.saveGame() // async
     // Update view elements
     this.view.showScorecard(this.game.scorecard)
     this.view.showTotal(this.game.upperSubtotal, this.game.bonuses, this.game.total)
@@ -55,11 +63,11 @@ export default class GameplayManager {
     this.updateDiceAndButtonsView()
   }
 
-  async roll() {
+  roll() {
     if (!this.game.canRoll(this.holding)) return
     this.game = this.game.roll(this.holding)
     this.selectedCategory = null
-    await this.saveGame()
+    this.saveGame() // async
     // Update view elements
     this.view.showScorecard(this.game.scorecard)
     this.updateDiceAndButtonsView()
