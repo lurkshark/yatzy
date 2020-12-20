@@ -7,10 +7,10 @@ import Menu from '../menu'
 
 export default class Gameplay {
 
-  constructor(coordinator) {
+  constructor(coordinator, options) {
     this.app = coordinator.app
     this.coordinator = coordinator
-    this.manager = new GameplayManager(coordinator, this)
+    this.manager = new GameplayManager(coordinator, this, options)
   }
 
   onStart(container) {

@@ -45,9 +45,13 @@ export default class Archive {
     return this.recentGames(1)[0] || null
   }
 
+  get gameIds() {
+    return this.games.map(g => g.id)
+  }
+
   registerGame(game) {
     if (this.currentGame === null) return new Archive([game])
-    if (this.currentGame.id === game.id) return this
+    if (this.gameIds.includes(game.id)) return this
     return new Archive([game, ...this.games])
   }
 }

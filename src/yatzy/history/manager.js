@@ -13,9 +13,8 @@ export default class HistoryManager {
   async start() {
     // Load most recent game and set view state
     const archive = await Archive.Repository(this.localforage).load()
-    const games = archive.recentGames(7)
 
-    this.recentGames = games.filter(game => game.done).slice(0, 6)
+    this.recentGames = archive.recentGames(12)
     this.view.showRecentGames(this.recentGames)
   }
 

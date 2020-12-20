@@ -1,6 +1,7 @@
 import jsQR from 'jsqr'
 import Archive from '../data/archive'
 import Game from '../data/game'
+import Gameplay from '../gameplay'
 
 export default class LoaderManager {
 
@@ -42,7 +43,11 @@ export default class LoaderManager {
     })
 
     const code = jsQR(image.data, image.width, image.height)
-    console.log(code && code.data ? code.data : null)
-    alert(code && code.data ? code.data : null)
+    if (code && code.data) {
+      const scannedGame = new Game(code.data)
+      const existingGame = await Game.Repository(this.localforage).load(scannedGame.id)
+      if (existingGame === null) await Game.Repository(this.localforage).save(scannedGame)
+      this.coordinator.gotoScene(new Gameplay(this.coordinator, {gameId: scannedGame.id}))
+    }
   }
 }
