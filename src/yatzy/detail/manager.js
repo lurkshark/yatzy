@@ -5,7 +5,7 @@ import Gameplay from '../gameplay'
 
 async function dataUrlToFile(dataUrl, filename) {
   const fileResponse = await fetch(dataUrl)
-  const fileBlob = fileResponse.blob()
+  const fileBlob = await fileResponse.blob()
   return new File([fileBlob], filename, {type: fileBlob.type})
 }
 

@@ -3,6 +3,7 @@ import MenuManager from './manager'
 import Gameplay from '../gameplay'
 import Loader from '../loader'
 import History from '../history'
+import Party from '../party'
 import {scientistSprites} from './assets'
 
 export default class Menu {
@@ -41,6 +42,17 @@ export default class Menu {
         this.updateReviewHistoryButton()
 
         this.scientistSprite = new PIXI.Sprite()
+        this.scientistSprite.interactive = true
+        // Go to the experimental party mode on double-click
+        this.scientistSprite.on('pointerup', () => {
+          const gotoParty = () => {
+            this.coordinator.gotoScene(new Party(this.coordinator))
+          }
+          this.scientistSprite.on('pointerdown', gotoParty)
+          setTimeout(() => {
+            this.scientistSprite.off('pointerdown', gotoParty)
+          }, 250)
+        })
         container.addChild(this.scientistSprite)
         this.updateScientistSprite(resources.scientist.texture)
 
