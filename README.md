@@ -1,34 +1,29 @@
-# parcel-pixijs-quickstarter
-Example App using pixiJS and Typescript bundled with parcel 🚀🔥.
+# Yatzy Laboratory
 
-### Highlights
-- ⚡️  Super fast start
-- 🔥  Hot module replacement.
-- 📝  Typescript.
-- 👮  Unit testing.
+*https://roll.with.dirty.vodka*
 
-### Quick start
-**Node version >= 10.6.0 (recommended 12.16.2) and NPM >= 6.1.0 (recommended 6.14.4)**
+Yatzy Laboratory is a progressive web app Yahtzee game with a competitive twist. Each game you play is identified by a seed value and the rolls of the dice are generated with a [HOTP algorithm](https://en.wikipedia.org/wiki/HMAC-based_One-Time_Password) using that seed. This seed is accessible as a QR code after you complete a game, which you can screenshot and send to a friend. When your friend loads that QR code, the game they play is the exact same sequence of rolls that you played. When they finish their game you'll be able to compare notes and see who played the sequence the best.
 
-```bash
-# clone the repo.
-# --depth 1 removes all but one .git commit history (Optional).
-git clone --depth 1 https://github.com/llorenspujol/parcel-pixijs-quickstarter.git
+## Development
 
-# go to the repo
-cd parcel-pixijs-quickstarter
+If you're interested in a detailed breakdown of some of the concepts used in this project, I've written some tutorials on [CodeREVUE.net](https://coderevue.net/tags/202101-javascript-pixijs-game/) that work through a smaller example project.
 
-# install the dependencies via npm
-npm install
+### Building
 
-# start the server in dev mode with HMR
-npm run start
+This project includes a [Docker Compose configuration](docker-compose.yml) that's used for building and developing this project. You'll need to have Docker Desktop installed to use it, but if you prefer to just use npm directly that should work just fine as well.
+
+```sh
+# Launch a local server
+# See the npm start target
+docker-compose up
+
+# Generate a release build
+docker-compose run development npm run build
+
+# Cleanup Docker containers
+docker-compose down
 ```
-go to [http://localhost:1234](http://localhost:1234) in your browser. Done.
 
-### npm scripts
+## License
 
-* `npm run start` - runs the compiler and a server at the same time in dev mode with HMR (Hot Module Replacement) 🔥.
-* `npm run build` - runs the compiler once and generates a production build.
-* `npm run build_serve` - it makes a build and serves it to port 8080.
-* `npm run test` - runs the unit tests (.spec.ts files).
+The code in this repository is made available under the [MIT license](LICENSE). The scientist graphics are licensed from [VectorStock.com](https://www.vectorstock.com/royalty-free-vector/working-scientists-professional-lab-research-vector-26720597) with an extended license. This means that I can use PNG versions of the images in this project and distribute that to you, but you cannot then redistribute them without first purchasing a license of your own.
