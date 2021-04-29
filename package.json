@@ -6,7 +6,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "start": "npm run clean && parcel src/index.html --host 0.0.0.0 --port 5001",
+    "start": "parcel src/index.html --host 0.0.0.0 --hmr-hostname localhost --port 5001 --hmr-port 5002",
     "build": "npm run clean && parcel build src/index.html --public-url ./",
     "build_serve": "npm run build && http-server ./dist",
     "clean": "rimraf ./dist ./.cache"

@@ -1,10 +1,11 @@
 version: "3"
 services:
-  yatzy:
+  development:
     image: node:12.16-stretch
     working_dir: /usr/yatzy
     ports:
     - "5001:5001"
+    - "5002:5002"
     volumes:
     - ./:/usr/yatzy
     command: >

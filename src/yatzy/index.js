@@ -93,10 +93,25 @@ export default class Yatzy {
   }
 
   get width() {
-    return this.app.screen.width - 40
+    const { width, height } = this.app.screen
+    const isWidthConstrained = width < height * 0.55
+    const isHeightConstrained = width * 0.75 > height
+    console.log(isWidthConstrained, isHeightConstrained)
+    if (isWidthConstrained || !isHeightConstrained) {
+      return width - 40
+    } else {
+      return height * 0.75 - 40
+    }
   }
 
   get height() {
-    return this.app.screen.height - 40
+    const { width, height } = this.app.screen
+    const isWidthConstrained = width < height * 0.55
+    const isHeightConstrained = width * 0.75 > height
+    if (isHeightConstrained || !isWidthConstrained) {
+      return height - 40
+    } else {
+      return width * 0.55 - 40
+    }
   }
 }
